@@ -3,7 +3,7 @@
 // @namespace    https://github.com/naimiliu/novelreader
 // @version      1.0.9
 // @description  自動抓取正文，提供字體調整、自動捲動等功能，提升小說閱讀體驗。
-// @icon         https://github.githubassets.com/pinned-octocat.svg
+// @icon         https://raw.githubusercontent.com/naimiliu/novelreader/main/default.png
 // @author       naimiliu
 // @match        https://*/*
 // @exclude      *://*.google.com.tw/*
