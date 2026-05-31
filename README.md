@@ -1,3 +1,3 @@
 # novelreader
-小說閱讀器 v1.0.8<br>
+小說閱讀器 v1.0.9
 <a href="https://raw.githubusercontent.com/naimiliu/novelreader/main/main.user.js">安裝</a>
