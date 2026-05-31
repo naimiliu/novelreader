@@ -11,7 +11,7 @@
 // @grant        none
 // @run-at       document-end
 // @require      https://cdnjs.cloudflare.com/ajax/libs/readability/0.6.0/Readability.min.js
-// @require      https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js
+// @require      https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js
 // ==/UserScript==
 /* global Readability */
 /* global OpenCC */
