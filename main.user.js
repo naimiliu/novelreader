@@ -261,7 +261,7 @@
             .controls span button { width:32px; height:32px; border: none; background:none; display: flex; align-items: center; justify-content: center;cursor: pointer; padding: 0;}
             .controls span label { width: 45px; font-size:16px; color: #444; line-height: 1; text-align: center; }
             .tips { display: none; position: fixed; bottom: 5px; width: auto; height:30px; padding: 5px 20px; font-size: 20px; color: white; background: #444; border-radius: 5px; }
-            .page-scroll-container { position: fixed; top: 50%; right: 40px; display: flex; flex-direction: column; gap: 2px; z-index: 2147483647; }
+            .page-scroll-container { position: fixed; top: 50%; right: ${isMobile ? '10px' : '40px'}; display: flex; flex-direction: column; gap: 2px; z-index: 2147483647; }
             .page-scroll-container button { width: 48px; height: 48px; padding: 0; background: none;z-index: 2147483647; opacity: 0.3; }
             .page-scroll-container button:hover { opacity: 0.6; }
             .page-scroll-container button:disabled { opacity: 0.1; cursor: not-allowed; }
