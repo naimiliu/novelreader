@@ -18,6 +18,7 @@
 // ==/UserScript==
 /* global Readability */
 /* global OpenCC */
+/* global pinyinPro */
 
 (function() {
     'use strict';
