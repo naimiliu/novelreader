@@ -23,7 +23,7 @@
     'use strict';
 
     // 1. 網址規則判斷，只在特定網址啟用閱讀模式
-    const urlPattern = /^https?:\/\/[^\/]+\/(read\/\d+_\d+.html$|read\/\d+\/p\d+.html$|read\/\d+\/\??\d+(_\d+){0,1}$|\d+\/\d+(_\d+){0,2}.html$|\d+_\d+\/\d+.html$|chapter\/\d+\/\d+.html$|chapter\/\d+\/\d+\/$|book\/\d+\/\d+.html$|book_\d+\/\d+.html$|book\/\d+\/\d+.html$|Book\/Read\/\d+,\d+$|txt\/\d+\/\d+$|txt\/\d+\/\d+.html$|html\/\d+\/\d+\/\d+.html$|fxnread\/\d+_\d+.html$|n\/\w*\/\d+.html$)/;
+    const urlPattern = /^https?:\/\/[^\/]+\/(read\/\d+_\d+.html$|read\/\d+\/p\d+.html$|read\/\d+\/\??\d+(_\d+){0,1}$|\d+\/\d+(_\d+){0,2}.html$|\d+_\d+\/\d+.html$|chapter\/\d+\/\d+.html$|chapter\/\d+\/\d+\/$|book\/\d+\/\d+.html$|book_\d+\/\d+.html$|Book\/Read\/\d+,\d+$|txt\/\d+\/\d+$|txt\/\d+\/\d+.html$|html\/\d+\/\d+\/\d+.html$|fxnread\/\d+_\d+.html$|n\/\w*\/\d+.html$)/;
 
     // 檢查目前網址，不符合則結束
     if (!urlPattern.test(window.location.href)) {
