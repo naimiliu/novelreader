@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小說閱讀器插件
 // @namespace    https://github.com/naimiliu/novelreader
-// @version      1.0.9
+// @version      1.1.1
 // @description  自動抓取正文，提供字體調整、自動捲動等功能，提升小說閱讀體驗。
 // @icon         https://raw.githubusercontent.com/naimiliu/novelreader/main/default.png
 // @author       naimiliu
@@ -234,14 +234,12 @@
                 --main-text-color: ${currentColor};
                 --main-bg-color: ${currentBgColor};
                 all: initial;
-                position:fixed; top:0; left:0; width:100%; height:100%;
-                background-color: var(--main-bg-color) !important;
-                color: var(--main-text-color);
-                z-index:999999; overflow-y:auto;
                 font-family: "Microsoft Yahei", Arial, sans-serif;
+                display:flex; position:fixed; top:0; left:0; width:100%; height:100%;
+                color: var(--main-text-color); background-color: var(--main-bg-color) !important;
+                justify-content: center; overflow-y:auto;
+                z-index:999999; 
                 -webkit-overflow-scrolling: touch;
-                display:flex;
-                justify-content: center;
             }
             .nr_layout { width: 95% !important; margin: 60px auto 20px; padding: 20px 0; max-width: 800px; }
             @media (min-width: 1000px) { .nr_layout { width: 80% !important; max-width: 1250px; } }
@@ -251,91 +249,45 @@
             }
             h1 { font-size: 25px; color: var(--main-text-color) !important; text-align: center; margin-bottom: 40px; }
             .nr_content p { text-indent:2em !important; margin-bottom: 1.2em !important; text-align: justify;}
-            .chapter-sep { border-top: 1px solid #333; margin: 50px 0; padding-top: 30px; }
-            .controls { position: fixed; top: 5px; width: auto; height: auto; display: flex; 
-            justify-content: flex-end; align-items: center; gap: 5px; padding: 5px; background: #a0a0a0; border-radius: 8px; z-index: 2147483647; transition: opacity 0.3s; opacity: '0'; pointer-events: auto; box-sizing: border-box; }
-            .controls:hover { opacity: 1; }
-            button { width:50px; height:40px; font-size:18px; border-radius:8px; background:#444; color:#fff; border:none; cursor: pointer;}
+            button { border-radius:8px; background:#444; color:#fff; border:none; cursor: pointer;}
             button:focus { outline:none; }
-            .panel {display:inline-flex; align-items: center;vertical-align: middle;gap: 5px;}
-            .btn { width:32px; height:32px; border: none; background:none; display: flex; align-items: center; justify-content: center;cursor: pointer; padding: 0;}
+            .controls { position: fixed; top: 5px; width: auto; height: auto; display: flex; justify-content: flex-end; align-items: center; gap: 5px; padding: 5px; background: #a0a0a0; border-radius: 8px; z-index: 2147483647; transition: opacity 0.3s; opacity: '0'; pointer-events: auto; box-sizing: border-box; }
+            .controls:hover { opacity: 1; }
+            .controls span {display:inline-flex; align-items: center;vertical-align: middle;gap: 5px;}
+            .controls span button { width:32px; height:32px; border: none; background:none; display: flex; align-items: center; justify-content: center;cursor: pointer; padding: 0;}
+            .controls span label { width: 45px; font-size:16px; color: #444; line-height: 1; text-align: center; }
             .tips { display: none; position: fixed; bottom: 5px; width: auto; height:30px; padding: 5px 20px; font-size: 20px; color: white; background: #444; border-radius: 5px; }
-            .page-btn-group { position: fixed; top: 50%; right: 40px; display: none; flex-direction: column; gap: 10px; z-index: 2147483647; }
-            .page-btn { background: none;z-index: 2147483647; opacity: 0.3; }
-            .page-btn:hover { opacity: 0.6; }
-            .page-btn:disabled { opacity: 0.1; cursor: not-allowed; }
+            .page-scroll-container { position: fixed; top: 50%; right: 40px; display: flex; flex-direction: column; gap: 2px; z-index: 2147483647; }
+            .page-scroll-container button { width: 48px; height: 48px; padding: 0; background: none;z-index: 2147483647; opacity: 0.3; }
+            .page-scroll-container button:hover { opacity: 0.6; }
+            .page-scroll-container button:disabled { opacity: 0.1; cursor: not-allowed; }
             .color-options { position: fixed; top: 60px; justify-content: flex-end; align-items: center; gap: 15px; padding: 8px 10px; z-index: 2147483647; background: #a1a5aa; border-radius: 8px; box-sizing: border-box; }
             .color-cb { border: 1px solid #898989; display: inline-block; width: 45px; height: 35px; overflow: hidden; vertical-align: middle;  box-sizing: border-box; cursor: pointer; }
             .color-cb:hover { border-color: rgb(138, 180, 248); border-width: 3px; }
-        `;
+            #text-selection-options { display: none; position: fixed; min-width: 232px; color: black;background: white; padding: 10px; border: 1px solid #ccc; border-radius: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); z-index: 2147483647; }
+            #text-selection-options button { font-size: 14px; color: #007BFF; background: none; border: none; cursor: pointer; }
+            #text-selection-options button:hover { color: #0056b3; }
+            #pinyin-popup { font-family: "Microsoft JhengHei", sans-serif; min-width: 250px; max-width: 400px; display: none; position: fixed; background: #fff; border: 2px solid #0056b3; border-radius: 8px; padding: 0px; z-index: 2147483647; }   
+            #pinyin-popup button { position: fixed; top: 0px; right: 0px; height: 30px; width: 30px; font-size: 14px; color: #fff; background: none; border: none; border-radius: 0 8px 0 0; cursor: pointer; }
+            #pinyin-popup button:hover { background: red; }
+            #pinyin-popup-header { cursor: move; background: #007BFF; color: white; height: 30px; padding-left: 10px;  border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: space-between; }
+            #pinyin-popup-content { max-height: 300px; font-size: 16px;color: black; background: #fff;padding: 20px 12px;line-height: 2.5; border: 1px solid #ccc; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; overflow-y: scroll; overflow-x: hidden; }
+            .py-result-item { padding-right: 5px; }
+       `;
         shadow.appendChild(style);
 
+        // 正文容器
         const container = document.createElement('div');
         container.className = 'nr_layout';
         container.id = 'nr_layout';
         container.innerHTML = `<h1 id="nr_title">${article.title}</h1><div id="nr_content" class="nr_content">${article.content}</div>`;
         shadow.appendChild(container);
 
+        // 提示訊息元素
         const tips = document.createElement('div');
         let tipsTimerId = null;
         tips.className = 'tips';
         shadow.appendChild(tips);
-
-        // 頁面導航按鈕
-        const downIcon = '<svg viewBox="0 0 24 24" width="48" height="48" fill="var(--main-text-color)" aria-hidden="true" ><path d="m15.293 10.293-2.94 2.94a.5.5 0 0 1-.707 0l-2.939-2.94a1 1 0 0 0-1.414 1.414l2.94 2.94a2.5 2.5 0 0 0 3.535 0l2.94-2.94a1 1 0 0 0-1.415-1.414z"></path><path d="M12 .5C5.649.5.5 5.649.5 12S5.649 23.5 12 23.5 23.5 18.351 23.5 12 18.351.5 12 .5zM2.5 12a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"></path></svg>'
-        const upIcon = '<svg viewBox="0 0 24 24" width="48" height="48" fill="var(--main-text-color)" aria-hidden="true" ><path d="m8.707 13.707 2.94-2.94a.5.5 0 0 1 .707 0l2.939 2.94a1 1 0 0 0 1.414-1.414l-2.94-2.94a2.5 2.5 0 0 0-3.535 0l-2.94 2.94a1 1 0 0 0 1.415 1.414z"></path><path d="M12 .5C5.649.5.5 5.649.5 12S5.649 23.5 12 23.5s11.5-5.149 11.5-11S18.351.5 12 .5zM2.5 12a9.5 9.5 0 1 1 19 0A9.5 9.5 0 0 1 2.5 12z"></path></svg>';
-        const endIcon = `<svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg"><g  fill="none" stroke="var(--main-text-color)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle r="21" cx="24" cy="24"/><path d="m17 18l7 7l7-7 m-14 14 l14 0"/></g></svg>`;
-        const pageBtnGroup = document.createElement('div');
-        pageBtnGroup.className = 'page-btn-group';
-        pageBtnGroup.style.transform = 'translateY(-50%)';
-        pageBtnGroup.innerHTML = `
-            <button class="page-btn" id="page-up-btn" title="Page Up">${upIcon}</button>
-            <button class="page-btn" id="page-down-btn" title="Page Down">${downIcon}</button>
-            <button class="page-btn" id="page-end-btn" title="PageEnd">${endIcon}</button>
-        `;
-        shadow.appendChild(pageBtnGroup);
-
-        // 頁面捲動按鈕事件
-        const pageDownBtn = pageBtnGroup.querySelector('#page-down-btn');
-        if (pageDownBtn) {
-            pageDownBtn.onclick = (e) => {
-                e.stopPropagation();
-                host.scrollBy({
-                    top: window.innerHeight * 0.9,
-                    behavior: 'smooth'
-                });
-            };
-        }      
-        const pageUpBtn = pageBtnGroup.querySelector('#page-up-btn');
-        if (pageUpBtn) {
-            pageUpBtn.disabled = true; // 初始狀態向上按鈕不可用
-            pageUpBtn.onclick = (e) => {
-                e.stopPropagation();
-                host.scrollBy({
-                    top: -window.innerHeight * 0.9,
-                    behavior: 'smooth'
-                });
-            };
-        }
-        const pageEndBtn = pageBtnGroup.querySelector('#page-end-btn');
-        if (pageEndBtn) {
-            pageEndBtn.onclick = (e) => {
-                e.stopPropagation();
-                host.scrollTo({
-                    top: host.scrollHeight - window.innerHeight * 1.7
-                });
-            };
-        };
-        // 監聽container的resize事件, 小於1000px則隱藏按鈕
-        const resizeObserver = new ResizeObserver(() => {
-            if (window.innerWidth < 1000) {
-                pageBtnGroup.style.display = 'none';
-            } else {
-                pageBtnGroup.style.display = 'flex';
-            }
-        });
-        resizeObserver.observe(container);
-
         function showTips(content, second = 5) {
             if (tipsTimerId) clearTimeout(tipsTimerId);
             tips.style.display = 'block';
@@ -357,28 +309,82 @@
 			}
 		}
 
+
+        // icon svg
+        const downIcon = '<svg viewBox="0 0 24 24" width="48" height="48" fill="var(--main-text-color)" aria-hidden="true" ><path d="m15.293 10.293-2.94 2.94a.5.5 0 0 1-.707 0l-2.939-2.94a1 1 0 0 0-1.414 1.414l2.94 2.94a2.5 2.5 0 0 0 3.535 0l2.94-2.94a1 1 0 0 0-1.415-1.414z"></path><path d="M12 .5C5.649.5.5 5.649.5 12S5.649 23.5 12 23.5 23.5 18.351 23.5 12 18.351.5 12 .5zM2.5 12a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"></path></svg>'
+        const upIcon = '<svg viewBox="0 0 24 24" width="48" height="48" fill="var(--main-text-color)" aria-hidden="true" ><path d="m8.707 13.707 2.94-2.94a.5.5 0 0 1 .707 0l2.939 2.94a1 1 0 0 0 1.414-1.414l-2.94-2.94a2.5 2.5 0 0 0-3.535 0l-2.94 2.94a1 1 0 0 0 1.415 1.414z"></path><path d="M12 .5C5.649.5.5 5.649.5 12S5.649 23.5 12 23.5s11.5-5.149 11.5-11S18.351.5 12 .5zM2.5 12a9.5 9.5 0 1 1 19 0A9.5 9.5 0 0 1 2.5 12z"></path></svg>';
+        const endIcon = `<svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg"><g  fill="none" stroke="var(--main-text-color)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle r="21" cx="24" cy="24"/><path d="m17 18l7 7l7-7 m-14 14 l14 0"/></g></svg>`;
         const plusIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12.0018 8C12.5541 8.00014 13.0017 8.44797 13.0015 9.00026L13.001 11.0005L14.9997 11C15.552 10.9999 15.9999 11.4475 16 11.9997C16.0001 12.552 15.5525 12.9999 15.0003 13L13.0005 13.0005L13 15.0003C12.9999 15.5525 12.552 16.0001 11.9997 16C11.4475 15.9999 10.9999 15.552 11 14.9997L11.0005 13.001L9.00025 13.0015C8.44797 13.0017 8.00014 12.5541 8 12.0018C7.99986 11.4495 8.44746 11.0017 8.99975 11.0015L11.001 11.001L11.0015 8.99974C11.0017 8.44746 11.4495 7.99986 12.0018 8Z" fill="#333333"></path></svg>`;
         const minusIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM15.0003 13C15.5525 12.9999 16.0001 12.552 16 11.9997C15.9999 11.4475 15.552 10.9999 14.9997 11L8.99975 11.0015C8.44746 11.0017 7.99986 11.4495 8 12.0018C8.00014 12.5541 8.44797 13.0017 9.00025 13.0015L15.0003 13Z" fill="#333333"></path></svg>`;
         const exitIcon = `<svg style="width:18px; height:18px; vertical-align:middle;" viewBox="0 0 512 512" fill="white"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L128 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l192 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>`;
 
-        const ctrl = document.createElement('div');
-        ctrl.className = 'controls';
-        ctrl.innerHTML = `
-            <button id="s-toggle" style="width:80px; color:#e67e22;">▶ 捲動</button>
-            <span id='s-panel' class='panel'>
-                <button id="s-minus" class='btn'>${minusIcon}</button>
-                <label id='s-txt' style="font-size:16px; color: #444; line-height: 1; text-align: center;">0.3</label>
-                <button id="s-plus" class='btn'>${plusIcon}</button>
-            </span>
-            <span id ='f-panel' class='panel'>
-                <button id="f-minus" class='btn'>${minusIcon}</button>
-				<label id='f-txt' style="font-size:16px; color: #444; line-height: 1; text-align: center;">${currentSize}px</label>
-                <button id="f-plus" class='btn'>${plusIcon}</button>
-            </span>
-            <button id="c-toggle" style="width:45px; height:35px; background: linear-gradient(-45deg, var(--main-bg-color) 60%, var(--main-text-color) 40%); border: 1px solid #000;" border-radius="0px" title="切換配色"></button>
-            <button id="f-close" style="color:#fff;background:#800; border:none; margin-left:10px;" title="關閉閱讀模式">${exitIcon}</button>
+        // 頁面捲動按鈕(Page Up, Page Down, Page End)
+        const pageScrollContainer = document.createElement('div');
+        pageScrollContainer.className = 'page-scroll-container';
+        pageScrollContainer.style.transform = 'translateY(-50%)';
+        pageScrollContainer.innerHTML = `
+            <button class="page-btn" id="page-up-btn" title="Page Up" disabled>${upIcon}</button>
+            <button class="page-btn" id="page-down-btn" title="Page Down">${downIcon}</button>
+            <button class="page-btn" id="page-end-btn" title="PageEnd">${endIcon}</button>
         `;
-        shadow.appendChild(ctrl);
+        shadow.appendChild(pageScrollContainer);
+
+        // 頁面捲動按鈕事件
+        pageScrollContainer.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+        pageScrollContainer.addEventListener('mouseup', (e) => {
+            e.stopPropagation();
+        });
+        pageScrollContainer.querySelector('#page-up-btn').addEventListener('click', (e) => {
+            host.scrollBy({
+                top: -window.innerHeight * 0.9,
+                behavior: 'smooth'
+            });
+        });
+        pageScrollContainer.querySelector('#page-down-btn').addEventListener('click', (e) => {
+            host.scrollBy({
+                top: window.innerHeight * 0.9,
+                behavior: 'smooth'
+            });
+        });
+        pageScrollContainer.querySelector('#page-end-btn').addEventListener('click', (e) => {
+            host.scrollTo({
+                top: host.scrollHeight - window.innerHeight * 1.7
+            });
+        });
+    
+        // 監聽container的resize事件, 小於1000px則隱藏按鈕
+        /*
+        const resizeObserver = new ResizeObserver(() => {
+            if (window.innerWidth < 1000) {
+                pageScrollContainer.style.display = 'none';
+            } else {
+                pageScrollContainer.style.display = 'flex';
+            }
+        });
+        resizeObserver.observe(container);
+        */
+
+        // 控制面板(捲動、字體、配色、關閉)
+        const controls = document.createElement('div');
+        controls.className = 'controls';
+        controls.innerHTML = `
+            <button id="auto-scroll-toggle" style="width:80px; height:40px; font-size:18px; color:#e67e22;">▶ 捲動</button>
+            <span id="speed-panel">
+                <button id="speed-minus">${minusIcon}</button>
+                <label id="speed-value">0.3</label>
+                <button id="speed-plus">${plusIcon}</button>
+            </span>
+            <span id ="font-panel">
+                <button id="font-minus">${minusIcon}</button>
+				<label id="font-txt">${currentSize}px</label>
+                <button id="font-plus">${plusIcon}</button>
+            </span>
+            <button id="color-picker" style="width:45px; height:35px; background: linear-gradient(-45deg, var(--main-bg-color) 60%, var(--main-text-color) 40%); border: 1px solid #000;" border-radius="0px" title="切換配色"></button>
+            <button id="reader-close" style="width:50px; height:40px; color:#fff; background:#800; border:none; margin-left:10px;" title="關閉閱讀模式">${exitIcon}</button>
+        `;
+        shadow.appendChild(controls);
 
         const colorOptions = document.createElement('div');
         colorOptions.className = 'color-options';
@@ -393,81 +399,110 @@
         `;
         shadow.appendChild(colorOptions);
 
+        // 控制面板自動隱藏邏輯：5秒無操作後淡出，移動到控制面板上則取消隱藏，離開則重新計時
         let ctrlHiddenTimeout = null;
         ctrlHiddenTimeout = setTimeout(() => {
-            ctrl.style.opacity = '0';
-            ctrl.style.pointerEvents = 'none';
+            controls.style.opacity = '0';
+            controls.style.pointerEvents = 'none';
         }, 5000);
 
+        const speedStep = 0.1;
         const updateFontSize = (size) => {
             const scrollPercent = host.scrollTop / host.scrollHeight;
             host.style.setProperty('--main-font-size', `${size}px`);
-            shadow.getElementById('f-txt').innerText = `${size}px`;
+            shadow.getElementById('font-txt').innerText = `${size}px`;
             localStorage.setItem('reader_font_size', size);
             setTimeout(() => {
                 host.scrollTop = host.scrollHeight * scrollPercent;
             }, 10);
         };
 
-        shadow.getElementById('f-close').onclick = () => {
+        controls.addEventListener('mouseenter', () => {
+            if (ctrlHiddenTimeout) {
+                clearTimeout(ctrlHiddenTimeout);
+                ctrlHiddenTimeout = null;
+            }
+            controls.style.opacity = '1';
+            controls.style.pointerEvents = 'auto';
+        });
+        controls.addEventListener('mouseleave', () => {
+            if (ctrlHiddenTimeout) clearTimeout(ctrlHiddenTimeout); 
+            ctrlHiddenTimeout = setTimeout(() => {
+                controls.style.opacity = '0';
+                controls.style.pointerEvents = 'none';
+            }, 5000);
+        });
+        controls.addEventListener('mousedown', e => {
+            e.stopPropagation();
+            if (ctrlHiddenTimeout) {
+                clearTimeout(ctrlHiddenTimeout);
+                ctrlHiddenTimeout = null;
+            }
+            console.log('控制面板被點擊，已取消自動隱藏');
+        });
+        controls.addEventListener('mouseup', e => {
+            e.stopPropagation();
+        });
+        controls.querySelector('#reader-close').addEventListener('click', () => {
             localStorage.setItem('reader_mode', 'close');
             location.reload();
-        }
-        shadow.getElementById('f-plus').onclick = (e) => {
-            e.stopPropagation();
+        });
+        controls.querySelector('#font-plus').addEventListener('click', () => {
             currentSize = Math.min(60, currentSize + 1);
             updateFontSize(currentSize);
-        };
-        shadow.getElementById('f-minus').onclick = (e) => {
-            e.stopPropagation();
+        });
+        controls.querySelector('#font-minus').addEventListener('click', () => {
             currentSize = Math.max(16, currentSize - 1);
             updateFontSize(currentSize);
-        };
-        shadow.getElementById('c-toggle').onclick = (e) => {
-            e.stopPropagation();
-            colorOptions.style.display = colorOptions.style.display === 'none' ? 'block' : 'none';
-            if(ctrlHiddenTimeout) { 
-                clearTimeout(ctrlHiddenTimeout); 
-                ctrlHiddenTimeout = null; 
-            }
-        }
-        colorOptions.querySelectorAll('.color-cb').forEach(cb => {
-            cb.onclick = (e) => {
-                e.stopPropagation();
-                const bg = cb.getAttribute('data-bg');
-                const fc = cb.getAttribute('data-fc');
-                host.style.setProperty('--main-bg-color', bg);
-                host.style.setProperty('--main-text-color', fc);
-                localStorage.setItem('reader_bg_color', bg);
-                localStorage.setItem('reader_text_color', fc);
-                colorOptions.style.display = 'none';
-            };
         });
-
+        controls.querySelector('#color-picker').addEventListener('click', () => {
+            colorOptions.style.display = colorOptions.style.display === 'none' ? 'block' : 'none';
+        });
+        colorOptions.addEventListener('click', e => {
+            e.stopPropagation();
+            colorOptions.style.display = 'none';
+        });
+        colorOptions.addEventListener('mouseup', e => {
+            e.stopPropagation();
+        });
+        colorOptions.querySelectorAll('.color-cb').forEach(cb => {
+            cb.addEventListener('click', e => {
+                host.style.setProperty('--main-bg-color', cb.dataset.bg);
+                host.style.setProperty('--main-text-color', cb.dataset.fc);
+                localStorage.setItem('reader_bg_color', cb.dataset.bg);
+                localStorage.setItem('reader_text_color', cb.dataset.fc);
+            });
+        });
+        controls.querySelector('#auto-scroll-toggle').addEventListener('click', (e) => {
+            isScrolling ? stopScrolling() : startScrolling();
+        });
+        controls.querySelector('#speed-plus').addEventListener('click', (e) => {
+            if (!isScrolling) return;
+            scrollSpeed += speedStep;
+            localStorage.setItem('scroll_speed', scrollSpeed);
+            updateScrollUI();
+        });
+        controls.querySelector('#speed-minus').addEventListener('click', (e) => {
+            if (!isScrolling) return;
+            scrollSpeed = Math.max(0.1, scrollSpeed - speedStep);
+            localStorage.setItem('scroll_speed', scrollSpeed);
+            updateScrollUI();
+        });
+        
+        //--- 自動捲動邏輯 ---
         let isScrolling = localStorage.getItem('is_scrolling') === 'true';
         let scrollRequest = null;
         let currentY = host.scrollTop;
         let scrollSpeed = parseFloat(localStorage.getItem('scroll_speed')) || 0.3;
-        const speedStep = 0.1;
-
-        const btnToggle = shadow.getElementById('s-toggle');
-        const btnPlus = shadow.getElementById('s-plus');
-        const btnMinus = shadow.getElementById('s-minus');
-        const panelSpeed = shadow.getElementById('s-panel');
-        const txtSpeed = shadow.getElementById('s-txt');
-
-        function updateUI() {
-            txtSpeed.innerText = `${scrollSpeed.toFixed(1)}`;
-            panelSpeed.style.display = isScrolling ? 'inline-flex' : 'none';
-            shadow.getElementById('f-panel').style.display = !isScrolling ? 'inline-flex' : 'none';
-        }
-
         function updateScrollUI() {
-            btnToggle.innerText = isScrolling ? " ⏸ 停止" : " ▶ 捲動";
-            btnToggle.style.color = isScrolling ? "#e67e22" : "#27ae60";
-            updateUI();
-        }
+            const autoScrollToggle = shadow.getElementById('auto-scroll-toggle');
+            autoScrollToggle.innerText = isScrolling ? " ⏸ 停止" : " ▶ 捲動";
+            autoScrollToggle.style.color = isScrolling ? "#e67e22" : "#27ae60";
 
+            shadow.getElementById('speed-value').innerText = `${scrollSpeed.toFixed(1)}`;
+            shadow.getElementById('speed-panel').style.display = isScrolling ? 'inline-flex' : 'none';
+            shadow.getElementById('font-panel').style.display = !isScrolling ? 'inline-flex' : 'none';
+        }
         function autoScroll() {
             if (!isScrolling) return;
             currentY += scrollSpeed;
@@ -480,7 +515,6 @@
             host.scrollTo(0, currentY);
             scrollRequest = requestAnimationFrame(autoScroll);
         }
-
         function startScrolling() {
             isScrolling = true;
             localStorage.setItem('is_scrolling', true);
@@ -488,7 +522,6 @@
             autoScroll();
             updateScrollUI();
         }
-
         function stopScrolling() {
             isScrolling = false;
             localStorage.setItem('is_scrolling', false);
@@ -496,55 +529,229 @@
             updateScrollUI();
         }
 
-        btnToggle.onclick = (e) => {
-            e.stopPropagation();
-            isScrolling ? stopScrolling() : startScrolling();
-        };
-
-        btnPlus.onclick = (e) => {
-            e.stopPropagation();
-            if (!isScrolling) return;
-            scrollSpeed += speedStep;
-            localStorage.setItem('scroll_speed', scrollSpeed);
-            updateScrollUI();
-        };
-
-        btnMinus.onclick = (e) => {
-            e.stopPropagation();
-            if (!isScrolling) return;
-            scrollSpeed = Math.max(0.1, scrollSpeed - speedStep);
-            localStorage.setItem('scroll_speed', scrollSpeed);
-            updateScrollUI();
-        };
-
+ 
+        // 中斷自動捲動的條件：使用者手動滾動、點擊頁面、按下鍵盤或觸控螢幕
         host.addEventListener('wheel', (event) => {
             if (isScrolling) stopScrolling();
         });
 
+        let selectedText = "";
+        const { html } = pinyinPro;
         const speaker = new ConsistentLongTextSpeaker();
-        host.addEventListener('click', e => {
-            const selectionText = window.getSelection().toString().trim();
-            // 監聽文字選取,朗讀選取的文字
-            if (selectionText.length > 0) {
-                speaker.speak(selectionText);
+
+        // 文字選取後的選單
+        const textSelectionOptions = document.createElement("div");
+        textSelectionOptions.id = "text-selection-options";
+        textSelectionOptions.innerHTML = `
+            <button id="option1">複製</button>
+            <button id="option2">搜尋</button>
+            <button id="option3">朗讀</button>
+            <button id="option4">翻譯</button>
+            <button id="option5">拼音</button>
+        `;
+        shadow.appendChild(textSelectionOptions);
+
+        // 彈窗: 顯示拼音結果
+        const pinyinPopup = document.createElement("div");
+        pinyinPopup.id = "pinyin-popup";
+        pinyinPopup.innerHTML = `
+            <div id="pinyin-popup-header">
+                <span id="pinyin-popup-title" style="border-top-left-radius: 8px;">pinyin</span>
+                <button id="close-pinyin-popup" style="border-top-right-radius: 8px;">X</button>
+            </div>
+            <div id="pinyin-popup-content"></div>
+        `;
+        shadow.appendChild(pinyinPopup);
+        
+        // 讓popup可以拖動
+        const pinyinPopupHeader = pinyinPopup.querySelector("#pinyin-popup-header");
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let savedSelection = null; // 用來暫存文字選取範圍
+        pinyinPopupHeader.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+
+            // 暫存當前的文字選取範圍，避免拖動過程中選取消失
+            const selection = shadow.getSelection();
+            if (selection.rangeCount > 0) {
+                savedSelection = selection.getRangeAt(0).cloneRange();
             }
-            // 點擊空白處切換控制面板顯示
-            else {               
-                if (ctrl.style.opacity == '0') {
-                    if (isScrolling) stopScrolling();
-                    ctrl.style.opacity = '1';
-                    ctrl.style.pointerEvents = 'auto';
-                } else {
-                    if (!colorOptions.contains(e.target)) {
-                        colorOptions.style.display = 'none';
+
+            isDragging = true;
+            const rect = pinyinPopup.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+        });
+        host.addEventListener("mousemove", (e) => {
+            if(!isDragging) return;
+
+            // 移動時防止滑鼠選取到畫面上的其他文字
+            e.preventDefault();
+
+            pinyinPopup.style.left = `${e.clientX - dragOffsetX}px`;
+            pinyinPopup.style.top = `${e.clientY - dragOffsetY}px`;
+            
+            // 在移動過程中，不斷強制將選取狀態補回來
+            if (savedSelection) {
+                const selection = shadow.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(savedSelection);
+            }
+        });
+        
+        // 文字選取後的選單事件
+        //--- 複製
+        textSelectionOptions.querySelector("#option1").addEventListener("click", e => {
+            navigator.clipboard.writeText(selectedText).then(() => {
+                shadow.getSelection().removeAllRanges();
+                textSelectionOptions.style.display = "none";
+                pinyinPopup.style.display = "none";
+                showTips("已複製到剪貼簿！", 2);
+            });
+        });
+        //--- 搜尋
+        textSelectionOptions.querySelector("#option2").addEventListener("click", e => {
+            const query = encodeURIComponent(selectedText);
+            window.open(`https://www.google.com/search?q=${query}`, '_blank');
+        });
+        //--- 朗讀
+        textSelectionOptions.querySelector("#option3").addEventListener("click", e => {
+            speaker.speak(selectedText);
+        });
+        //--- 翻譯
+        textSelectionOptions.querySelector("#option4").addEventListener("click", e => {
+            const query = encodeURIComponent(selectedText);
+
+            // 有中文則翻譯成英文，沒有中文則翻譯成中文
+            const targetLang = /[\u4e00-\u9fa5]/.test(selectedText) ? 'en' : 'zh-TW';
+            window.open(`https://translate.google.com/?sl=auto&tl=${targetLang}&op=translate&text=${query}`, '_blank');
+        });
+        //--- 拼音
+        textSelectionOptions.querySelector("#option5").addEventListener("click", e => {
+            if(pinyinPopup.style.display === "block") {
+                pinyinPopup.style.display = "none";
+                return;
+            }
+            pinyinPopup.style.display = "block";
+            const centerX = window.innerWidth / 2 - pinyinPopup.offsetWidth / 2;
+            const centerY = window.innerHeight / 2 - pinyinPopup.offsetHeight / 2;
+            let { top, left } = localStorage.getItem('pinyin_popup_position') ? JSON.parse(localStorage.getItem('pinyin_popup_position')) : { top: centerY, left: centerX };
+            if(top + pinyinPopup.offsetHeight > window.innerHeight) {
+                top = window.innerHeight - pinyinPopup.offsetHeight - 20;
+            }
+            else if (top < 20) {
+                top = 20;
+            }
+            if(left + pinyinPopup.offsetWidth > window.innerWidth) {
+                left = window.innerWidth - pinyinPopup.offsetWidth - 20;
+            }
+            else if (left < 20) {
+                left = 20;
+            }
+            pinyinPopup.style.top = `${top}px`;
+            pinyinPopup.style.left = `${left}px`;       
+        });    
+        //--- 關閉彈窗
+        pinyinPopup.querySelector("#close-pinyin-popup").addEventListener("click", e => {
+            pinyinPopup.style.display = "none";
+        }); 
+        // 阻止選單內的點擊事件冒泡，避免觸發host的mouseup事件導致control面板的顯示/隱藏
+        textSelectionOptions.addEventListener("mousedown", e => {
+            e.stopPropagation();
+        });
+        textSelectionOptions.addEventListener("mouseup", e => {
+            e.stopPropagation();
+        });
+
+ 
+        // 監聽文字選取變化，動態更新選取的文字內容；如果沒有選取任何文字，則隱藏選單與彈窗
+        host.addEventListener('selectionchange', () => {
+            const selection = shadow.getSelection();
+            selectedText = selection.toString().trim();
+
+            // 如果畫面上沒有選取任何文字，立刻隱藏選單與彈窗
+            if (selectedText.length === 0) {
+                textSelectionOptions.style.display = "none";
+                pinyinPopup.style.display = "none";
+            }
+        });
+
+        // 監聽滑鼠事件：選取文字顯示選單，點擊空白處切換控制面板顯示
+        host.addEventListener('mouseup', e => {
+            if (isDragging) {
+                isDragging = false;
+                localStorage.setItem('pinyin_popup_position', JSON.stringify({ top: pinyinPopup.offsetTop, left: pinyinPopup.offsetLeft }));
+                return;
+            }
+            setTimeout(() => {
+                const selection = shadow.getSelection();
+                // 獲取選取的文字
+                selectedText = selection.toString().trim();
+                // 如果有選取文字，則顯示選單
+                if (selectedText.length > 0) {
+                    /*if(textSelectionOptions.style.display === 'flex') {
+                        return;
+                    }*/
+                    textSelectionOptions.style.display = "flex";
+                    const rect = selection.getRangeAt(0).getBoundingClientRect();
+                    if(rect.top < 60) {
+                        textSelectionOptions.style.top = `${rect.bottom + 10}px`;
                     }
                     else {
-                        return;
+                        textSelectionOptions.style.top = `${rect.top - textSelectionOptions.offsetHeight - 10}px`;
                     }
-                    ctrl.style.opacity = '0';
-                    ctrl.style.pointerEvents = 'none';
+                    const newLeft = rect.right - textSelectionOptions.offsetWidth / 2;
+                    if(newLeft + textSelectionOptions.offsetWidth > window.innerWidth) {
+                        textSelectionOptions.style.left = `${window.innerWidth - textSelectionOptions.offsetWidth - 20}px`;
+                    } 
+                    else {
+                        textSelectionOptions.style.left = `${newLeft}px`;
+                    }
+                    // 更新彈窗內容
+                    const pinyinPopupContent = pinyinPopup.querySelector("#pinyin-popup-content");
+                    const sentences = selectedText.split(/([。？！；…\n\r]|\,\s*)/g)
+                            .map(s => s.trim())
+                            .filter(s => s.length > 0)
+                            .reduce((acc, current) => {
+                                const punctuations = ["。", "？", "！", "；", "…", ",", "”", "“", "‘", "’"];
+                                if (punctuations.includes(current) && acc.length > 0) {
+                                    acc[acc.length - 1] += current;
+                                } else {
+                                    acc.push(current);
+                                }
+                                return acc;
+                            }, []);
+                    let pinyinHtml = "";
+                    sentences.forEach(sentence => {
+                        pinyinHtml += html(sentence)+"<br>";
+                    });
+                    pinyinPopupContent.innerHTML = pinyinHtml;
                 }
-            }
+                // 點擊空白處切換控制面板顯示
+                else {       
+                    if(textSelectionOptions.style.display === 'flex') {
+                        textSelectionOptions.style.display = "none";
+                        pinyinPopup.style.display = "none";
+                        return;
+                    }                      
+
+                    if (controls.style.opacity == '0') {
+                        if (isScrolling) stopScrolling();
+                        controls.style.opacity = '1';
+                        controls.style.pointerEvents = 'auto';
+                    } else {
+                        if (!colorOptions.contains(e.target)) {
+                            colorOptions.style.display = 'none';
+                        }
+                        else {
+                            return;
+                        }
+                        controls.style.opacity = '0';
+                        controls.style.pointerEvents = 'none';
+                    }
+                }
+            }, 100);
         });
        
         let lastScrollY = host.scrollTop;
@@ -552,8 +759,8 @@
         let isJumping = false; // 跳轉鎖定狀態
         host.addEventListener('scroll', () => {
             // 按鈕禁用邏輯
-            if (pageUpBtn) pageUpBtn.disabled = host.scrollTop === 0;
-            if (pageDownBtn) pageDownBtn.disabled = host.scrollTop + window.innerHeight >= host.scrollHeight;
+            pageScrollContainer.querySelector('#page-up-btn').disabled = host.scrollTop === 0;
+            pageScrollContainer.querySelector('#page-down-btn').disabled = host.scrollTop + window.innerHeight >= host.scrollHeight;
 
             const currentScrollY = host.scrollTop;       
 
@@ -563,7 +770,7 @@
 
                 if (reachedBottom && !isJumping) {
                     isJumping = true; // 鎖定,防止重複觸發
-                    showTips('到底了，跳轉中⋯⋯(按下Esc可取消)', 3);
+                    showTips('到底了，跳轉中⋯', 3);
                     if ( !scrollTimeoutId ) {
                         scrollTimeoutId = setTimeout(() => {
                             jumpTo(nextLink);
@@ -652,6 +859,7 @@
             }
         }, true);
 
+        // 手機端的左右滑動事件: 向左滑動跳轉下一頁, 向右滑動跳轉上一頁
         let touchStartX = 0;
         host.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
@@ -662,6 +870,7 @@
             if (swipeDistance < -50) jumpTo(prevLink);
         }, false);
        
+        // 內容異常檢測: 內容過短或標題包含502錯誤提示, 則認定為提取失敗, 進行重試
         if (article.content.length < 500) {
             //console.log("Article content is short:", article.content.length);
             if(article.content.length === 0 || /502: Bad gateway/i.test(article.title)) { 
@@ -683,7 +892,7 @@
         else {
             localStorage.removeItem('load_failed_count');
             if (window.innerWidth >= 1000) {
-                pageBtnGroup.style.display = 'flex';
+                pageScrollContainer.style.display = 'flex';
             }
         }
 
