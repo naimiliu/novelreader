@@ -12,6 +12,9 @@
 // @run-at       document-end
 // @require      https://cdnjs.cloudflare.com/ajax/libs/readability/0.6.0/Readability.min.js
 // @require      https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js
+// @require      https://cdn.jsdelivr.net/npm/pinyin-pro@3.28.1/dist/index.min.js
+// @updateURL    https://raw.githubusercontent.com/naimiliu/novelreader/main/main.user.js
+// @downloadURL  https://raw.githubusercontent.com/naimiliu/novelreader/main/main.user.js
 // ==/UserScript==
 /* global Readability */
 /* global OpenCC */
