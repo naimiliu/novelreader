@@ -628,6 +628,7 @@
                 touchStartY = e.touches[0].clientY;
             });
             host.addEventListener('touchend', e => {
+                if(e.target.tagName === "BUTTON" ) return;
                 const deltaX = touchStartX - e.changedTouches[0].clientX;
                 const deltaY = touchStartY - e.changedTouches[0].clientY;
 
