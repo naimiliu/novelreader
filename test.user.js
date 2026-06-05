@@ -433,6 +433,9 @@
             }, 5000);
         });
         // 點擊控制面板內的按鈕時也取消隱藏，避免操作中面板突然消失
+        controls.addEventListener('touchend', e => {
+            e.stopPropagation();
+        });
         controls.addEventListener('mouseup', e => {
             e.stopPropagation();
         });
@@ -476,10 +479,13 @@
             updateFontSize(currentSize);
         });
         // --- color picker
+        controls.querySelector('#color-picker').addEventListener('touchend', (e) => {
+            e.stopPropagation();
+        });
         controls.querySelector('#color-picker').addEventListener('mouseup', (e) => {
             e.stopPropagation();
         });
-        controls.querySelector('#color-picker').addEventListener('click', (e) => {
+         controls.querySelector('#color-picker').addEventListener('click', (e) => {
             e.stopPropagation();
             colorOptions.classList.toggle('hidden');
         });
