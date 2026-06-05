@@ -267,7 +267,7 @@
             .page-scroll-container button { width: 48px; height: 48px; padding: 0; background: none;z-index: 2147483647; opacity: 0.3; }
             .page-scroll-container button:hover { opacity: 0.6; }
             .page-scroll-container button:disabled { opacity: 0.1; cursor: not-allowed; }
-            .color-options { transition: opacity 1s; opacity: 1; pointer-events: auto; display: flex; position: fixed; top: 60px; justify-content: flex-end; align-items: center; gap: 15px; padding: 8px 10px; z-index: 2147483647; background: #a1a5aa; border-radius: 8px; box-sizing: border-box; }
+            .color-options { transition: opacity 1s; opacity: 1; pointer-events: auto; display: flex; position: fixed; top: 60px; justify-content: flex-end; align-items: center; gap: 5px; padding: 8px 10px; z-index: 2147483647; background: #a1a5aa; border-radius: 8px; box-sizing: border-box; }
             .color-options.hidden { opacity: 0; pointer-events: none; }
             .color-cb { display: inline-block; border: 1px solid #898989; width: 45px; height: 35px; overflow: hidden; vertical-align: middle;  box-sizing: border-box; cursor: pointer; }
             .color-cb:hover { border-color: rgb(138, 180, 248); border-width: 3px; }
