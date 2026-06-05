@@ -434,6 +434,7 @@
         });
         // 點擊控制面板內的按鈕時也取消隱藏，避免操作中面板突然消失
         controls.addEventListener('touchend', e => {
+            e.preventDefault();
             e.stopPropagation();
         });
         controls.addEventListener('mouseup', e => {
@@ -479,7 +480,8 @@
             updateFontSize(currentSize);
         });
         // --- color picker
-        controls.querySelector('#color-picker').addEventListener('touchend', (e) => {
+        controls.querySelector('#color-picker').addEventListener('touchend', (e) => {                       
+            e.preventDefault();
             e.stopPropagation();
         });
         controls.querySelector('#color-picker').addEventListener('mouseup', (e) => {
@@ -510,6 +512,7 @@
 
         // 頁面捲動按鈕事件
         pageScrollContainer.addEventListener('touchend', e => {
+            e.preventDefault();
             e.stopPropagation();
         });
         pageScrollContainer.addEventListener('mouseup', e => {
