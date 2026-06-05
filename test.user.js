@@ -433,8 +433,8 @@
             }, 5000);
         });
         // 點擊控制面板內的按鈕時也取消隱藏，避免操作中面板突然消失
+        
         controls.addEventListener('touchend', e => {
-            //e.preventDefault();
             e.stopPropagation();
         });
         controls.addEventListener('mouseup', e => {
@@ -480,19 +480,22 @@
             updateFontSize(currentSize);
         });
         // --- color picker
-        controls.querySelector('#color-picker').addEventListener('touchend', (e) => {                       
-            
-            e.stopPropagation();
-        });
         controls.querySelector('#color-picker').addEventListener('mouseup', (e) => {
             e.stopPropagation();
         });
-         controls.querySelector('#color-picker').addEventListener('click', (e) => {
+        controls.querySelector('#color-picker').addEventListener('touchend', (e) => {
+            e.stopPropagation();
+        });
+        controls.querySelector('#color-picker').addEventListener('click', (e) => {
             e.stopPropagation();
             colorOptions.classList.toggle('hidden');
         });
         // === color options
-        colorOptions.addEventListener('click', e => {
+        colorOptions.addEventListener('mouseup', e => {
+            e.stopPropagation();
+            colorOptions.classList.add('hidden');
+        });
+        colorOptions.addEventListener('touchend', e => {
             e.stopPropagation();
             colorOptions.classList.add('hidden');
         });
@@ -511,10 +514,10 @@
         });
 
         // 頁面捲動按鈕事件
-        pageScrollContainer.addEventListener('touchend', e => {
+        pageScrollContainer.addEventListener('mouseup', e => {
             e.stopPropagation();
         });
-        pageScrollContainer.addEventListener('mouseup', e => {
+        pageScrollContainer.addEventListener('touchend', e => {
             e.stopPropagation();
         });
         pageScrollContainer.querySelector('#page-up-btn').addEventListener('click', e => {
@@ -638,16 +641,9 @@
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
             });
-
             host.addEventListener('touchend', e => {
-                const touch = e.changedTouches[0];
-                // 取得手指「放開當下」那個物理坐標上的元素
-                const realTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-alert(realTarget.tagName);
-                if (realTarget && realTarget.closest('button')) return;
-
-                const deltaX = touchStartX - touch.clientX;
-                const deltaY = touchStartY - touch.clientY;
+                const deltaX = touchStartX - e.changedTouches[0].clientX;
+                const deltaY = touchStartY - e.changedTouches[0].clientY;
 
                 // 優先判斷系統原生狀態：如果手機當前已經選取了文字，不執行任何自訂動作
                 if (window.getSelection().toString().trim().length > 0) {
