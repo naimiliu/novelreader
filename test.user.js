@@ -503,6 +503,9 @@
         });
 
         // 頁面捲動按鈕事件
+        pageScrollContainer.addEventListener('touchend', e => {
+            e.stopPropagation();
+        });
         pageScrollContainer.addEventListener('mouseup', e => {
             e.stopPropagation();
         });
@@ -633,7 +636,7 @@
                 // 取得手指「放開當下」那個物理坐標上的元素
                 const realTarget = document.elementFromPoint(touch.clientX, touch.clientY);
 
-                if (realTarget && !realTarget.closest('div')) return;
+                if (realTarget && realTarget.closest('button')) return;
 
                 const deltaX = touchStartX - touch.clientX;
                 const deltaY = touchStartY - touch.clientY;
