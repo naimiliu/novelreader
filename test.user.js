@@ -633,7 +633,7 @@
                 // 取得手指「放開當下」那個物理坐標上的元素
                 const realTarget = document.elementFromPoint(touch.clientX, touch.clientY);
 
-                if (realTarget && realTarget.closest('button')) return;
+                if (realTarget && !realTarget.closest('div')) return;
 
                 const deltaX = touchStartX - touch.clientX;
                 const deltaY = touchStartY - touch.clientY;
