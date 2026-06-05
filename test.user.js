@@ -493,18 +493,19 @@
         // === color options
         colorOptions.addEventListener('mouseup', e => {
             e.stopPropagation();
-            colorOptions.classList.add('hidden');
         });
         colorOptions.addEventListener('touchend', e => {
             e.stopPropagation();
-            colorOptions.classList.add('hidden');
         });
         colorOptions.querySelectorAll('.color-cb').forEach(cb => {
             cb.addEventListener('click', e => {
+                e.preventDefault();
+                e.stopPropagation();
                 host.style.setProperty('--main-bg-color', cb.dataset.bg);
                 host.style.setProperty('--main-text-color', cb.dataset.fc);
                 localStorage.setItem('reader_bg_color', cb.dataset.bg);
                 localStorage.setItem('reader_text_color', cb.dataset.fc);
+                colorOptions.classList.add('hidden');
             });
         });
         // --- close reader
