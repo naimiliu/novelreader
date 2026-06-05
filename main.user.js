@@ -20,7 +20,7 @@
 /* global OpenCC */
 /* global pinyinPro */
 
-(function() {
+(function () {
     'use strict';
 
     // 1. 網址規則判斷，只在特定網址啟用閱讀模式
@@ -69,7 +69,7 @@
                 pitch: 1.0,
                 volume: 1.0
             };
-            
+
             // 初始化語音庫（處理 getVoices 非同步載入問題）
             this._initVoices();
         }
@@ -79,9 +79,9 @@
                 const voices = this.synth.getVoices();
                 // 優先尋找微軟台灣曉臻（常見且好聽），次之選取任何台灣中文，最後保底中文
                 this.targetVoice = voices.find(v => (v.name.includes("曉臻") || v.name.includes("Hsiaochen")) && v.lang === "zh-TW")
-                                || voices.find(v => v.name.includes("臺灣") && v.lang === "zh-TW")
-                                || voices.find(v => v.lang === "zh-TW")
-                                || voices.find(v => v.lang.includes("zh"));
+                    || voices.find(v => v.name.includes("臺灣") && v.lang === "zh-TW")
+                    || voices.find(v => v.lang === "zh-TW")
+                    || voices.find(v => v.lang.includes("zh"));
                 //console.log("可用語音列表：", voices);
                 if (!this.targetVoice) {
                     console.log("未找到符合的語音");
@@ -102,18 +102,18 @@
         _splitText(text) {
             // 使用正規表達式，依據常見標點符號切分，並過濾掉空白字串
             return text.split(/([。？！；…\n\r]|\,\s*)/g)
-                    .map(s => s.trim())
-                    .filter(s => s.length > 0)
-                    .reduce((acc, current) => {
-                        // 重新把標點符號接回前一句的尾巴，讓語氣更自然
-                        const punctuations = ["。", "？", "！", "；", "…", ","];
-                        if (punctuations.includes(current) && acc.length > 0) {
-                            acc[acc.length - 1] += current;
-                        } else {
-                            acc.push(current);
-                        }
-                        return acc;
-                    }, []);
+                .map(s => s.trim())
+                .filter(s => s.length > 0)
+                .reduce((acc, current) => {
+                    // 重新把標點符號接回前一句的尾巴，讓語氣更自然
+                    const punctuations = ["。", "？", "！", "；", "…", ","];
+                    if (punctuations.includes(current) && acc.length > 0) {
+                        acc[acc.length - 1] += current;
+                    } else {
+                        acc.push(current);
+                    }
+                    return acc;
+                }, []);
         }
 
         /**
@@ -132,7 +132,7 @@
             // 3. 依序將切片丟入瀏覽器播放隊列
             sentences.forEach((sentence, index) => {
                 const utterance = new SpeechSynthesisUtterance(sentence);
-                
+
                 // 核心：每一句都強制綁定相同的語音與參數
                 if (this.targetVoice) {
                     utterance.voice = this.targetVoice;
@@ -161,7 +161,7 @@
         stop() {
             this.synth.cancel();
         }
-    }    
+    }
 
     function startReader() {
         try {
@@ -255,30 +255,52 @@
             .nr_content p { text-indent:2em !important; margin-bottom: 1.2em !important; text-align: justify;}
             button { border-radius:8px; background:#444; color:#fff; border:none; cursor: pointer;}
             button:focus { outline:none; }
-            .controls { position: fixed; top: 5px; width: auto; height: auto; display: flex; justify-content: flex-end; align-items: center; gap: 5px; padding: 5px; background: #a0a0a0; border-radius: 8px; z-index: 2147483647; transition: opacity 0.3s; opacity: '0'; pointer-events: auto; box-sizing: border-box; }
-            .controls:hover { opacity: 1; }
+            .controls { transition: opacity 0.3s; opacity: 1; pointer-events: auto; display: flex; position: fixed; top: 5px; width: auto; height: auto; justify-content: flex-end; align-items: center; gap: 5px; padding: 5px; background: #a0a0a0; border-radius: 8px; z-index: 2147483647; box-sizing: border-box; }
+            .controls.hidden { opacity: 0; pointer-events: none; }
             .controls span {display:inline-flex; align-items: center;vertical-align: middle;gap: 5px;}
-            .controls span button { width:32px; height:32px; border: none; background:none; display: flex; align-items: center; justify-content: center;cursor: pointer; padding: 0;}
+            .controls span.hidden { display: none; }
+            .controls span button { display: flex; width:32px; height:32px; border: none; background:none; align-items: center; justify-content: center;cursor: pointer; padding: 0;}
             .controls span label { width: 45px; font-size:16px; color: #444; line-height: 1; text-align: center; }
-            .tips { display: none; position: fixed; bottom: 5px; width: auto; height:30px; padding: 5px 20px; font-size: 20px; color: white; background: #444; border-radius: 5px; }
-            .page-scroll-container { position: fixed; top: 50%; right: ${isMobile ? '10px' : '40px'}; display: flex; flex-direction: column; gap: 2px; z-index: 2147483647; }
+            .tips { display: block; position: fixed; bottom: 5px; width: auto; height:30px; padding: 5px 20px; font-size: 20px; color: white; background: #444; border-radius: 5px; }
+            .tips.hidden { display: none; }
+            .page-scroll-container { display: flex; position: fixed; top: 50%; right: ${isMobile ? '10px' : '40px'}; flex-direction: column; gap: 2px; z-index: 2147483647; }
             .page-scroll-container button { width: 48px; height: 48px; padding: 0; background: none;z-index: 2147483647; opacity: 0.3; }
             .page-scroll-container button:hover { opacity: 0.6; }
             .page-scroll-container button:disabled { opacity: 0.1; cursor: not-allowed; }
-            .color-options { position: fixed; top: 60px; justify-content: flex-end; align-items: center; gap: 15px; padding: 8px 10px; z-index: 2147483647; background: #a1a5aa; border-radius: 8px; box-sizing: border-box; }
-            .color-cb { border: 1px solid #898989; display: inline-block; width: 45px; height: 35px; overflow: hidden; vertical-align: middle;  box-sizing: border-box; cursor: pointer; }
+            .color-options { transition: opacity 1s; opacity: 1; pointer-events: auto; display: flex; position: fixed; top: 60px; justify-content: flex-end; align-items: center; gap: 5px; padding: 8px 10px; z-index: 2147483647; background: #a1a5aa; border-radius: 8px; box-sizing: border-box; }
+            .color-options.hidden { opacity: 0; pointer-events: none; }
+            .color-cb { display: inline-block; border: 1px solid #898989; width: 45px; height: 35px; overflow: hidden; vertical-align: middle;  box-sizing: border-box; cursor: pointer; }
             .color-cb:hover { border-color: rgb(138, 180, 248); border-width: 3px; }
-            #text-selection-options { display: none; position: fixed; min-width: 232px; color: black;background: white; padding: 10px; border: 1px solid #ccc; border-radius: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); z-index: 2147483647; }
-            #text-selection-options button { font-size: 14px; color: #007BFF; background: none; border: none; cursor: pointer; }
-            #text-selection-options button:hover { color: #0056b3; }
-            #pinyin-popup { font-family: "Microsoft JhengHei", sans-serif; min-width: 250px; max-width: 400px; display: none; position: fixed; background: #fff; border: 2px solid #0056b3; border-radius: 8px; padding: 0px; z-index: 2147483647; }   
-            #pinyin-popup button { position: fixed; top: 0px; right: 0px; height: 30px; width: 30px; font-size: 14px; color: #fff; background: none; border: none; border-radius: 0 8px 0 0; cursor: pointer; }
-            #pinyin-popup button:hover { background: red; }
-            #pinyin-popup-header { cursor: move; background: #007BFF; color: white; height: 30px; padding-left: 10px;  border-top-left-radius: 8px; border-top-right-radius: 8px; display: flex; align-items: center; justify-content: space-between; }
-            #pinyin-popup-content { max-height: 300px; font-size: 16px;color: black; background: #fff;padding: 20px 12px;line-height: 2.5; border: 1px solid #ccc; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; overflow-y: scroll; overflow-x: hidden; }
+            .text-selection-options { display: flex; flex-direction: row; position: fixed; min-width: 232px; color: black;background: white; padding: 10px; border: 1px solid #ccc; border-radius: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); z-index: 2147483647; }
+            .text-selection-options.hidden { display: none; }
+            .text-selection-options button { font-size: 14px; color: #007BFF; background: none; border: none; cursor: pointer; text-wrap-mode: nowrap; }
+            .text-selection-options button:hover { color: #0056b3; }
+            .pinyin-popup { display: block; position: fixed; font-family: "Microsoft JhengHei", sans-serif; min-width: 250px; max-width: 400px; background: #fff; border: 2px solid #0056b3; border-radius: 8px; padding: 0px; z-index: 2147483647; }   
+            .pinyin-popup.hidden { display: none; }
+            .pinyin-popup button { position: absolute; top: 0px; right: 0px; height: 30px; width: 30px; font-size: 14px; color: #fff; background: none; border: none; border-radius: 0 8px 0 0; cursor: pointer; }
+            .pinyin-popup button:hover { background: red; }
+            #pinyin-popup-header { display: flex; cursor: move; background: #007BFF; color: white; height: 30px; padding-left: 10px;  border-top-left-radius: 8px; border-top-right-radius: 8px; align-items: center; justify-content: space-between; }
+            #pinyin-popup-content { display: block; max-height: 300px; font-size: 16px; color: black; background: #fff; padding: 20px 12px; line-height: 2.5; border: 1px solid #ccc; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; overflow-y: scroll; overflow-x: hidden； }
             .py-result-item { padding-right: 5px; }
        `;
         shadow.appendChild(style);
+
+        const { html } = pinyinPro;
+        const speaker = new ConsistentLongTextSpeaker();
+        // ---- 自動捲動相關變數
+        const speedStep = 0.1;
+        let isScrolling = localStorage.getItem('is_scrolling') === 'true';
+        let scrollRequest = null;
+        let currentY = host.scrollTop;
+        let scrollSpeed = parseFloat(localStorage.getItem('scroll_speed')) || 0.3;
+        // ---- 文字選取相關變數
+        let selectedText = "";
+        let isSelecting = false;
+        let savedSelection = null; // 用來暫存文字選取範圍
+        // ---- 拖動拼音視窗相關變數
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
 
         // 正文容器
         const container = document.createElement('div');
@@ -291,38 +313,38 @@
         const tips = document.createElement('div');
         let tipsTimerId = null;
         tips.className = 'tips';
+        tips.classList.add('hidden');
         shadow.appendChild(tips);
         function showTips(content, second = 5) {
             if (tipsTimerId) clearTimeout(tipsTimerId);
-            tips.style.display = 'block';
+            tips.classList.remove('hidden');
             tips.innerText = content;
             tipsTimerId = setTimeout(() => {
-                tips.style.display = 'none';
+                tips.classList.add('hidden');
                 tipsTimerId = null;
             }, second * 1000)
         }
+        // 頁面跳轉函式
+        function jumpTo(link) {
+            if (link) window.location.href = link;
+            else {
+                showTips('沒有下一頁了哦~');
+                localStorage.setItem('reader_mode', 'close');
+                setTimeout(() => {
+                    location.reload();
+                }, 2 * 1000);
+            }
+        }
 
-		function jumpTo(link) {
-			if (link) window.location.href = link;
-			else {
-				showTips('沒有下一頁了哦~');
-				localStorage.setItem('reader_mode', 'close');
-				setTimeout(() => {
-					location.reload();
-				}, 2*1000);
-			}
-		}
-
-
-        // icon svg
+        // 面板容器
+        // --- icon svg
         const downIcon = '<svg viewBox="0 0 24 24" width="48" height="48" fill="var(--main-text-color)" aria-hidden="true" ><path d="m15.293 10.293-2.94 2.94a.5.5 0 0 1-.707 0l-2.939-2.94a1 1 0 0 0-1.414 1.414l2.94 2.94a2.5 2.5 0 0 0 3.535 0l2.94-2.94a1 1 0 0 0-1.415-1.414z"></path><path d="M12 .5C5.649.5.5 5.649.5 12S5.649 23.5 12 23.5 23.5 18.351 23.5 12 18.351.5 12 .5zM2.5 12a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"></path></svg>'
         const upIcon = '<svg viewBox="0 0 24 24" width="48" height="48" fill="var(--main-text-color)" aria-hidden="true" ><path d="m8.707 13.707 2.94-2.94a.5.5 0 0 1 .707 0l2.939 2.94a1 1 0 0 0 1.414-1.414l-2.94-2.94a2.5 2.5 0 0 0-3.535 0l-2.94 2.94a1 1 0 0 0 1.415 1.414z"></path><path d="M12 .5C5.649.5.5 5.649.5 12S5.649 23.5 12 23.5s11.5-5.149 11.5-11S18.351.5 12 .5zM2.5 12a9.5 9.5 0 1 1 19 0A9.5 9.5 0 0 1 2.5 12z"></path></svg>';
         const endIcon = `<svg viewBox="0 0 48 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg"><g  fill="none" stroke="var(--main-text-color)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle r="21" cx="24" cy="24"/><path d="m17 18l7 7l7-7 m-14 14 l14 0"/></g></svg>`;
         const plusIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM12.0018 8C12.5541 8.00014 13.0017 8.44797 13.0015 9.00026L13.001 11.0005L14.9997 11C15.552 10.9999 15.9999 11.4475 16 11.9997C16.0001 12.552 15.5525 12.9999 15.0003 13L13.0005 13.0005L13 15.0003C12.9999 15.5525 12.552 16.0001 11.9997 16C11.4475 15.9999 10.9999 15.552 11 14.9997L11.0005 13.001L9.00025 13.0015C8.44797 13.0017 8.00014 12.5541 8 12.0018C7.99986 11.4495 8.44746 11.0017 8.99975 11.0015L11.001 11.001L11.0015 8.99974C11.0017 8.44746 11.4495 7.99986 12.0018 8Z" fill="#333333"></path></svg>`;
         const minusIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM15.0003 13C15.5525 12.9999 16.0001 12.552 16 11.9997C15.9999 11.4475 15.552 10.9999 14.9997 11L8.99975 11.0015C8.44746 11.0017 7.99986 11.4495 8 12.0018C8.00014 12.5541 8.44797 13.0017 9.00025 13.0015L15.0003 13Z" fill="#333333"></path></svg>`;
         const exitIcon = `<svg style="width:18px; height:18px; vertical-align:middle;" viewBox="0 0 512 512" fill="white"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L128 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l192 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>`;
-
-        // 頁面捲動按鈕(Page Up, Page Down, Page End)
+        // --- 頁面捲動按鈕容器(Page Up, Page Down, Page End)
         const pageScrollContainer = document.createElement('div');
         pageScrollContainer.className = 'page-scroll-container';
         pageScrollContainer.style.transform = 'translateY(-50%)';
@@ -333,54 +355,17 @@
         `;
         shadow.appendChild(pageScrollContainer);
 
-        // 頁面捲動按鈕事件
-        pageScrollContainer.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-        pageScrollContainer.addEventListener('mouseup', (e) => {
-            e.stopPropagation();
-        });
-        pageScrollContainer.querySelector('#page-up-btn').addEventListener('click', (e) => {
-            host.scrollBy({
-                top: -window.innerHeight * 0.9,
-                behavior: 'smooth'
-            });
-        });
-        pageScrollContainer.querySelector('#page-down-btn').addEventListener('click', (e) => {
-            host.scrollBy({
-                top: window.innerHeight * 0.9,
-                behavior: 'smooth'
-            });
-        });
-        pageScrollContainer.querySelector('#page-end-btn').addEventListener('click', (e) => {
-            host.scrollTo({
-                top: host.scrollHeight - window.innerHeight * 1.7
-            });
-        });
-    
-        // 監聽container的resize事件, 小於1000px則隱藏按鈕
-        /*
-        const resizeObserver = new ResizeObserver(() => {
-            if (window.innerWidth < 1000) {
-                pageScrollContainer.style.display = 'none';
-            } else {
-                pageScrollContainer.style.display = 'flex';
-            }
-        });
-        resizeObserver.observe(container);
-        */
-
-        // 控制面板(捲動、字體、配色、關閉)
+        // --- 控制面板(捲動、字體、配色、關閉)
         const controls = document.createElement('div');
         controls.className = 'controls';
         controls.innerHTML = `
             <button id="auto-scroll-toggle" style="width:80px; height:40px; font-size:18px; color:#e67e22;">▶ 捲動</button>
-            <span id="speed-panel">
+            <span id="speed-panel" class="${!isScrolling ? 'hidden' : ''}">
                 <button id="speed-minus">${minusIcon}</button>
                 <label id="speed-value">0.3</label>
                 <button id="speed-plus">${plusIcon}</button>
             </span>
-            <span id ="font-panel">
+            <span id ="font-panel" class="${isScrolling ? 'hidden' : ''}">
                 <button id="font-minus">${minusIcon}</button>
 				<label id="font-txt">${currentSize}px</label>
                 <button id="font-plus">${plusIcon}</button>
@@ -389,10 +374,10 @@
             <button id="reader-close" style="width:50px; height:40px; color:#fff; background:#800; border:none; margin-left:10px;" title="關閉閱讀模式">${exitIcon}</button>
         `;
         shadow.appendChild(controls);
-
+        // --- 配色選項面板
         const colorOptions = document.createElement('div');
         colorOptions.className = 'color-options';
-        colorOptions.style.display = 'none';
+        colorOptions.classList.add('hidden');
         colorOptions.innerHTML = `
             <a class="color-cb" data-bg="#111111" data-fc="#a0a0a0" style="background: linear-gradient(-45deg, #111111 60%, #a0a0a0 40%);"></a>
             <a class="color-cb" data-bg="#363b40" data-fc="#b8bfc6" style="background: linear-gradient(-45deg, #363b40 60%, #b8bfc6 40%);"></a>
@@ -402,110 +387,370 @@
             <a class="color-cb" data-bg="#DCEAEE" data-fc="#191919" style="background: linear-gradient(-45deg, #DCEAEE 60%, #191919 40%);"></a>
         `;
         shadow.appendChild(colorOptions);
+        // --- 文字選取選單
+        const textSelectionOptions = document.createElement("div");
+        textSelectionOptions.className = "text-selection-options";
+        textSelectionOptions.classList.add("hidden");
+        textSelectionOptions.innerHTML = `
+            <button id="option1">複製</button>
+            <button id="option2">搜尋</button>
+            <button id="option3">朗讀</button>
+            <button id="option4">翻譯</button>
+            <button id="option5">拼音</button>
+        `;
+        shadow.appendChild(textSelectionOptions);
+        // --- pinyin彈窗: 顯示拼音結果
+        const pinyinPopup = document.createElement("div");
+        pinyinPopup.className = "pinyin-popup";
+        pinyinPopup.classList.add("hidden");
+        pinyinPopup.innerHTML = `
+            <div id="pinyin-popup-header">
+                <span id="pinyin-popup-title" style="border-top-left-radius: 8px;">pinyin</span>
+                <button id="close-pinyin-popup" style="border-top-right-radius: 8px;">X</button>
+            </div>
+            <div id="pinyin-popup-content" disabled></div>
+        `;
+        shadow.appendChild(pinyinPopup);
+
 
         // 控制面板自動隱藏邏輯：5秒無操作後淡出，移動到控制面板上則取消隱藏，離開則重新計時
         let ctrlHiddenTimeout = null;
         ctrlHiddenTimeout = setTimeout(() => {
-            controls.style.opacity = '0';
-            controls.style.pointerEvents = 'none';
+            controls.classList.add('hidden');
         }, 5000);
-
-        const speedStep = 0.1;
-        const updateFontSize = (size) => {
-            const scrollPercent = host.scrollTop / host.scrollHeight;
-            host.style.setProperty('--main-font-size', `${size}px`);
-            shadow.getElementById('font-txt').innerText = `${size}px`;
-            localStorage.setItem('reader_font_size', size);
-            setTimeout(() => {
-                host.scrollTop = host.scrollHeight * scrollPercent;
-            }, 10);
-        };
-
         controls.addEventListener('mouseenter', () => {
             if (ctrlHiddenTimeout) {
                 clearTimeout(ctrlHiddenTimeout);
                 ctrlHiddenTimeout = null;
             }
-            controls.style.opacity = '1';
-            controls.style.pointerEvents = 'auto';
+            controls.classList.remove('hidden');
         });
         controls.addEventListener('mouseleave', () => {
-            if (ctrlHiddenTimeout) clearTimeout(ctrlHiddenTimeout); 
+            if (ctrlHiddenTimeout) clearTimeout(ctrlHiddenTimeout);
             ctrlHiddenTimeout = setTimeout(() => {
-                controls.style.opacity = '0';
-                controls.style.pointerEvents = 'none';
+                controls.classList.add('hidden');
+                colorOptions.classList.add('hidden');
             }, 5000);
         });
-        controls.addEventListener('mousedown', e => {
+        // 點擊控制面板內的按鈕時也取消隱藏，避免操作中面板突然消失
+        
+        controls.addEventListener('touchend', e => {
+            e.stopPropagation();
+        });
+        controls.addEventListener('mouseup', e => {
+            e.stopPropagation();
+        });
+        controls.addEventListener('click', e => {
             e.stopPropagation();
             if (ctrlHiddenTimeout) {
                 clearTimeout(ctrlHiddenTimeout);
                 ctrlHiddenTimeout = null;
             }
-            console.log('控制面板被點擊，已取消自動隱藏');
-        });
-        controls.addEventListener('mouseup', e => {
-            e.stopPropagation();
-        });
-        controls.querySelector('#reader-close').addEventListener('click', () => {
-            localStorage.setItem('reader_mode', 'close');
-            location.reload();
-        });
-        controls.querySelector('#font-plus').addEventListener('click', () => {
-            currentSize = Math.min(60, currentSize + 1);
-            updateFontSize(currentSize);
-        });
-        controls.querySelector('#font-minus').addEventListener('click', () => {
-            currentSize = Math.max(16, currentSize - 1);
-            updateFontSize(currentSize);
-        });
-        controls.querySelector('#color-picker').addEventListener('click', () => {
-            colorOptions.style.display = colorOptions.style.display === 'none' ? 'block' : 'none';
-        });
-        colorOptions.addEventListener('click', e => {
-            e.stopPropagation();
-            colorOptions.style.display = 'none';
-        });
-        colorOptions.addEventListener('mouseup', e => {
-            e.stopPropagation();
-        });
-        colorOptions.querySelectorAll('.color-cb').forEach(cb => {
-            cb.addEventListener('click', e => {
-                host.style.setProperty('--main-bg-color', cb.dataset.bg);
-                host.style.setProperty('--main-text-color', cb.dataset.fc);
-                localStorage.setItem('reader_bg_color', cb.dataset.bg);
-                localStorage.setItem('reader_text_color', cb.dataset.fc);
-            });
-        });
-        controls.querySelector('#auto-scroll-toggle').addEventListener('click', (e) => {
+            colorOptions.classList.add('hidden');
+
+        });        
+        // --- auto scroll
+        controls.querySelector('#auto-scroll-toggle').addEventListener('click', e => {
             isScrolling ? stopScrolling() : startScrolling();
         });
-        controls.querySelector('#speed-plus').addEventListener('click', (e) => {
+        // 中斷自動捲動的條件：使用者手動滾動、點擊頁面、按下鍵盤或觸控螢幕
+        host.addEventListener('wheel', (event) => {
+            if (isScrolling) stopScrolling();
+        });
+        // --- scroll speed ++/--
+        controls.querySelector('#speed-plus').addEventListener('click', e => {
             if (!isScrolling) return;
             scrollSpeed += speedStep;
             localStorage.setItem('scroll_speed', scrollSpeed);
             updateScrollUI();
         });
-        controls.querySelector('#speed-minus').addEventListener('click', (e) => {
+        controls.querySelector('#speed-minus').addEventListener('click', e => {
             if (!isScrolling) return;
             scrollSpeed = Math.max(0.1, scrollSpeed - speedStep);
             localStorage.setItem('scroll_speed', scrollSpeed);
             updateScrollUI();
         });
-        
+        // --- font size++/--
+        controls.querySelector('#font-plus').addEventListener('click', () => {
+            currentSize = Math.min(60, currentSize + 1);
+            updateFontSize(currentSize);
+        });
+        controls.querySelector('#font-minus').addEventListener('click', () => {
+            currentSize = Math.max(12, currentSize - 1);
+            updateFontSize(currentSize);
+        });
+        // --- color picker
+        controls.querySelector('#color-picker').addEventListener('mouseup', (e) => {
+            e.stopPropagation();
+        });
+        controls.querySelector('#color-picker').addEventListener('touchend', (e) => {
+            e.stopPropagation();
+        });
+        controls.querySelector('#color-picker').addEventListener('click', (e) => {
+            e.stopPropagation();
+            colorOptions.classList.toggle('hidden');
+        });
+        // === color options
+        colorOptions.addEventListener('mouseup', e => {
+            e.stopPropagation();
+        });
+        colorOptions.addEventListener('touchend', e => {
+            e.stopPropagation();
+        });
+        colorOptions.querySelectorAll('.color-cb').forEach(cb => {
+            cb.addEventListener('click', e => {
+                e.preventDefault();
+                e.stopPropagation();
+                host.style.setProperty('--main-bg-color', cb.dataset.bg);
+                host.style.setProperty('--main-text-color', cb.dataset.fc);
+                localStorage.setItem('reader_bg_color', cb.dataset.bg);
+                localStorage.setItem('reader_text_color', cb.dataset.fc);
+                colorOptions.classList.add('hidden');
+            });
+        });
+        // --- close reader
+        controls.querySelector('#reader-close').addEventListener('click', () => {
+            localStorage.setItem('reader_mode', 'close');
+            location.reload();
+        });
+
+        // 頁面捲動按鈕事件
+        pageScrollContainer.addEventListener('mouseup', e => {
+            e.stopPropagation();
+        });
+        pageScrollContainer.addEventListener('touchend', e => {
+            e.stopPropagation();
+        });
+        pageScrollContainer.querySelector('#page-up-btn').addEventListener('click', e => {
+            host.scrollBy({
+                top: -window.innerHeight * 0.9,
+                behavior: 'smooth'
+            });
+        });
+        pageScrollContainer.querySelector('#page-down-btn').addEventListener('click', e => {
+            host.scrollBy({
+                top: window.innerHeight * 0.9,
+                behavior: 'smooth'
+            });
+        });
+        pageScrollContainer.querySelector('#page-end-btn').addEventListener('click', e => {
+            host.scrollTo({
+                top: host.scrollHeight - window.innerHeight * 1.7
+            });
+        });
+
+        // 文字選取選單事件
+        textSelectionOptions.addEventListener("mouseup", e => {
+            e.stopPropagation();
+        });        //--- 複製
+        textSelectionOptions.querySelector("#option1").addEventListener("click", e => {
+            navigator.clipboard.writeText(selectedText).then(() => {
+                shadow.getSelection().removeAllRanges();
+                textSelectionOptions.classList.add("hidden");
+                pinyinPopup.classList.add("hidden");
+                showTips("已複製到剪貼簿！", 2);
+            });
+        });
+        //--- 搜尋
+        textSelectionOptions.querySelector("#option2").addEventListener("click", e => {
+            const query = encodeURIComponent(selectedText);
+            window.open(`https://www.google.com/search?q=${query}`, '_blank');
+        });
+        //--- 朗讀
+        textSelectionOptions.querySelector("#option3").addEventListener("click", e => {
+            speaker.speak(selectedText);
+        });
+        //--- 翻譯
+        textSelectionOptions.querySelector("#option4").addEventListener("click", e => {
+            const query = encodeURIComponent(selectedText);
+
+            // 有中文則翻譯成英文，沒有中文則翻譯成中文
+            const targetLang = /[\u4e00-\u9fa5]/.test(selectedText) ? 'en' : 'zh-TW';
+            window.open(`https://translate.google.com/?sl=auto&tl=${targetLang}&op=translate&text=${query}`, '_blank');
+        });
+        //--- 拼音
+        textSelectionOptions.querySelector("#option5").addEventListener("click", e => {
+            if ( !pinyinPopup.classList.contains("hidden") ) {
+                pinyinPopup.classList.add("hidden");
+                return;
+            }
+            pinyinPopup.classList.remove("hidden");
+            const defaultX = window.innerWidth - pinyinPopup.offsetWidth - 20;
+            const defaultY = 20;
+            let { top, left } = localStorage.getItem('pinyin_popup_position') ? JSON.parse(localStorage.getItem('pinyin_popup_position')) : { top: defaultY, left: defaultX };
+            if (top < 0 || top + pinyinPopup.offsetHeight > window.innerHeight) {
+                top = defaultY;
+            }
+            if (left < 0 || left + pinyinPopup.offsetWidth > window.innerWidth) {
+                left = defaultX;
+            }
+            pinyinPopup.style.top = `${top}px`;
+            pinyinPopup.style.left = `${left}px`;           
+        });
+        // 拼音彈窗事件
+        //--- 關閉彈窗
+        pinyinPopup.querySelector("#close-pinyin-popup").addEventListener("click", e => {
+            pinyinPopup.classList.add("hidden");
+        });
+        //--- 拖動彈窗
+        pinyinPopup.querySelector("#pinyin-popup-header").addEventListener("mousedown", e => {
+            e.preventDefault();
+
+            // 暫存當前的文字選取範圍，避免拖動過程中選取消失
+            const selection = shadow.getSelection();
+            if (selection.rangeCount > 0) {
+                savedSelection = selection.getRangeAt(0).cloneRange();
+            }
+
+            isDragging = true;
+            const rect = pinyinPopup.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+        });
+        host.addEventListener("mousemove", e => {
+            if (!isDragging) return;
+
+            // 移動時防止滑鼠選取到畫面上的其他文字
+            e.preventDefault();
+
+            pinyinPopup.style.left = `${e.clientX - dragOffsetX}px`;
+            pinyinPopup.style.top = `${e.clientY - dragOffsetY}px`;
+
+            // 在移動過程中，不斷強制將選取狀態補回來
+            if (savedSelection) {
+                const selection = shadow.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(savedSelection);
+            }
+        });
+        pinyinPopup.querySelector("#pinyin-popup-header").addEventListener("mouseup", e => {
+            e.preventDefault();
+            e.stopPropagation();
+            isDragging = false;
+            localStorage.setItem('pinyin_popup_position', JSON.stringify({ top: pinyinPopup.offsetTop, left: pinyinPopup.offsetLeft }));
+        });
+
+
+        // 觸控裝置滑動與點擊事件        
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0; // 使用簡單的特徵偵測，判斷當前裝置是否支援觸控
+        if (isTouchDevice) {
+            // 觸控裝置: 滑動跳頁.點擊空白處切換控制面板顯示/隱藏
+            let touchStartX = 0;
+            let touchStartY = 0;
+            // 手機端的左右滑動事件: 向左滑動跳轉下一頁, 向右滑動跳轉上一頁
+            host.addEventListener('touchstart', e => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            });
+            host.addEventListener('touchend', e => {
+                const deltaX = touchStartX - e.changedTouches[0].clientX;
+                const deltaY = touchStartY - e.changedTouches[0].clientY;
+
+                // 優先判斷系統原生狀態：如果手機當前已經選取了文字，不執行任何自訂動作
+                if (window.getSelection().toString().trim().length > 0) {
+                    return;
+                }
+
+                // 判斷滑動跳頁 (X 軸位移大於 60px，且 Y 軸垂直偏移小於 40px)
+                if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 40) {
+                    if (deltaX < 0)
+                        jumpTo(nextLink);
+                    else
+                        jumpTo(prevLink);
+                    return;
+                }
+
+                // 判斷單純點擊空白處 (完全沒有滑動)
+                if (Math.abs(deltaX) < 5 && Math.abs(deltaY) < 5) {
+                    // 延遲一下，確保手機系統處理完可能的取消選取動作
+                    setTimeout(() => {
+                        handleBlankClick();
+                    }, 50);
+                }
+            });
+        }
+
+        // 文字選取事件,無選取則為單擊(click)
+        host.addEventListener('mouseup', e => {
+            setTimeout(() => {
+                const selection = shadow.getSelection();
+                selectedText = selection.toString().trim();
+                // 有文字選取
+                if (selectedText.length > 0) {
+                    // 顯示選單
+                    textSelectionOptions.classList.remove('hidden');
+                    const rect = selection.getRangeAt(0).getBoundingClientRect();
+                    const lineHeight = currentSize * 1.5;
+                    const newLeft = (rect.height > lineHeight) ? (rect.left + (rect.width - textSelectionOptions.offsetWidth) / 2) : (rect.right - textSelectionOptions.offsetWidth / 2);
+                    textSelectionOptions.style.left = `${ (newLeft + textSelectionOptions.offsetWidth > window.innerWidth) ? (window.innerWidth - textSelectionOptions.offsetWidth) : (newLeft) }px`;
+                    textSelectionOptions.style.top = `${ (rect.top < 60) ? (rect.bottom + 10) : (rect.top - textSelectionOptions.offsetHeight - 10)}px`;
+
+                    // 更新彈窗內容
+                    refreshPinyinPopupContent(selectedText);
+                    return;
+                }
+                // 無文字選取，則切換控制面板顯示/隱藏
+                else {            
+                    handleBlankClick();
+                }
+            }, 100);
+        });
+
+        /* 電腦版的點擊空白處 (滑鼠不需要考慮滑動跳頁)
+        host.addEventListener('click', e => {
+            if (e.offsetX === 0 && e.offsetY === 0) return;
+
+            setTimeout(() => {
+                if (!isSelecting) {
+                    handleBlankClick();
+                }
+            }, 100);
+        });*/
+        function handleBlankClick() {
+            // 先隱藏選單與拼音視窗
+            if (!textSelectionOptions.classList.contains('hidden')) {
+                textSelectionOptions.classList.add('hidden');
+                pinyinPopup.classList.add('hidden');
+                return;
+            }
+
+            // 切換控制面板的顯示狀態
+            controls.classList.toggle('hidden');
+            if (controls.classList.contains('hidden')) {
+                colorOptions.classList.add('hidden');
+            }
+            else {
+                if (isScrolling) stopScrolling();
+            }
+        }
+        function refreshPinyinPopupContent(text) {
+            const sentences = text.split(/([。？！；…\n\r]|\,\s*)/g)
+                .map(s => s.trim())
+                .filter(s => s.length > 0)
+                .reduce((acc, current) => {
+                    const punctuations = ["。", "？", "！", "；", "…", ",", "”", "“", "‘", "’"];
+                    if (punctuations.includes(current) && acc.length > 0) {
+                        acc[acc.length - 1] += current;
+                    } else {
+                        acc.push(current);
+                    }
+                    return acc;
+                }, []);
+            let pinyinHtml = "";
+            sentences.forEach(sentence => {
+                pinyinHtml += html(sentence) + "<br>";
+            });
+            pinyinPopup.querySelector("#pinyin-popup-content").innerHTML = pinyinHtml;
+        }
         //--- 自動捲動邏輯 ---
-        let isScrolling = localStorage.getItem('is_scrolling') === 'true';
-        let scrollRequest = null;
-        let currentY = host.scrollTop;
-        let scrollSpeed = parseFloat(localStorage.getItem('scroll_speed')) || 0.3;
         function updateScrollUI() {
             const autoScrollToggle = shadow.getElementById('auto-scroll-toggle');
             autoScrollToggle.innerText = isScrolling ? " ⏸ 停止" : " ▶ 捲動";
             autoScrollToggle.style.color = isScrolling ? "#e67e22" : "#27ae60";
 
             shadow.getElementById('speed-value').innerText = `${scrollSpeed.toFixed(1)}`;
-            shadow.getElementById('speed-panel').style.display = isScrolling ? 'inline-flex' : 'none';
-            shadow.getElementById('font-panel').style.display = !isScrolling ? 'inline-flex' : 'none';
+            shadow.getElementById('speed-panel').classList.toggle('hidden', !isScrolling);
+            shadow.getElementById('font-panel').classList.toggle('hidden', isScrolling);
         }
         function autoScroll() {
             if (!isScrolling) return;
@@ -532,232 +777,20 @@
             cancelAnimationFrame(scrollRequest);
             updateScrollUI();
         }
+        // 更新正文字體大小的函式，並嘗試保持當前閱讀位置不變
+        function updateFontSize(size) {
+            const scrollPercent = host.scrollTop / host.scrollHeight;
 
- 
-        // 中斷自動捲動的條件：使用者手動滾動、點擊頁面、按下鍵盤或觸控螢幕
-        host.addEventListener('wheel', (event) => {
-            if (isScrolling) stopScrolling();
-        });
+            host.style.setProperty('--main-font-size', `${size}px`);
+            shadow.getElementById('font-txt').innerText = `${size}px`;
+            localStorage.setItem('reader_font_size', size);
 
-        let selectedText = "";
-        const { html } = pinyinPro;
-        const speaker = new ConsistentLongTextSpeaker();
-
-        // 文字選取後的選單
-        const textSelectionOptions = document.createElement("div");
-        textSelectionOptions.id = "text-selection-options";
-        textSelectionOptions.innerHTML = `
-            <button id="option1">複製</button>
-            <button id="option2">搜尋</button>
-            <button id="option3">朗讀</button>
-            <button id="option4">翻譯</button>
-            <button id="option5">拼音</button>
-        `;
-        shadow.appendChild(textSelectionOptions);
-
-        // 彈窗: 顯示拼音結果
-        const pinyinPopup = document.createElement("div");
-        pinyinPopup.id = "pinyin-popup";
-        pinyinPopup.innerHTML = `
-            <div id="pinyin-popup-header">
-                <span id="pinyin-popup-title" style="border-top-left-radius: 8px;">pinyin</span>
-                <button id="close-pinyin-popup" style="border-top-right-radius: 8px;">X</button>
-            </div>
-            <div id="pinyin-popup-content"></div>
-        `;
-        shadow.appendChild(pinyinPopup);
-        
-        // 讓popup可以拖動
-        const pinyinPopupHeader = pinyinPopup.querySelector("#pinyin-popup-header");
-        let isDragging = false;
-        let dragOffsetX = 0;
-        let dragOffsetY = 0;
-        let savedSelection = null; // 用來暫存文字選取範圍
-        pinyinPopupHeader.addEventListener("mousedown", (e) => {
-            e.preventDefault();
-
-            // 暫存當前的文字選取範圍，避免拖動過程中選取消失
-            const selection = shadow.getSelection();
-            if (selection.rangeCount > 0) {
-                savedSelection = selection.getRangeAt(0).cloneRange();
-            }
-
-            isDragging = true;
-            const rect = pinyinPopup.getBoundingClientRect();
-            dragOffsetX = e.clientX - rect.left;
-            dragOffsetY = e.clientY - rect.top;
-        });
-        host.addEventListener("mousemove", (e) => {
-            if(!isDragging) return;
-
-            // 移動時防止滑鼠選取到畫面上的其他文字
-            e.preventDefault();
-
-            pinyinPopup.style.left = `${e.clientX - dragOffsetX}px`;
-            pinyinPopup.style.top = `${e.clientY - dragOffsetY}px`;
-            
-            // 在移動過程中，不斷強制將選取狀態補回來
-            if (savedSelection) {
-                const selection = shadow.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(savedSelection);
-            }
-        });
-        
-        // 文字選取後的選單事件
-        //--- 複製
-        textSelectionOptions.querySelector("#option1").addEventListener("click", e => {
-            navigator.clipboard.writeText(selectedText).then(() => {
-                shadow.getSelection().removeAllRanges();
-                textSelectionOptions.style.display = "none";
-                pinyinPopup.style.display = "none";
-                showTips("已複製到剪貼簿！", 2);
-            });
-        });
-        //--- 搜尋
-        textSelectionOptions.querySelector("#option2").addEventListener("click", e => {
-            const query = encodeURIComponent(selectedText);
-            window.open(`https://www.google.com/search?q=${query}`, '_blank');
-        });
-        //--- 朗讀
-        textSelectionOptions.querySelector("#option3").addEventListener("click", e => {
-            speaker.speak(selectedText);
-        });
-        //--- 翻譯
-        textSelectionOptions.querySelector("#option4").addEventListener("click", e => {
-            const query = encodeURIComponent(selectedText);
-
-            // 有中文則翻譯成英文，沒有中文則翻譯成中文
-            const targetLang = /[\u4e00-\u9fa5]/.test(selectedText) ? 'en' : 'zh-TW';
-            window.open(`https://translate.google.com/?sl=auto&tl=${targetLang}&op=translate&text=${query}`, '_blank');
-        });
-        //--- 拼音
-        textSelectionOptions.querySelector("#option5").addEventListener("click", e => {
-            if(pinyinPopup.style.display === "block") {
-                pinyinPopup.style.display = "none";
-                return;
-            }
-            pinyinPopup.style.display = "block";
-            const centerX = window.innerWidth / 2 - pinyinPopup.offsetWidth / 2;
-            const centerY = window.innerHeight / 2 - pinyinPopup.offsetHeight / 2;
-            let { top, left } = localStorage.getItem('pinyin_popup_position') ? JSON.parse(localStorage.getItem('pinyin_popup_position')) : { top: centerY, left: centerX };
-            if(top + pinyinPopup.offsetHeight > window.innerHeight) {
-                top = window.innerHeight - pinyinPopup.offsetHeight - 20;
-            }
-            else if (top < 20) {
-                top = 20;
-            }
-            if(left + pinyinPopup.offsetWidth > window.innerWidth) {
-                left = window.innerWidth - pinyinPopup.offsetWidth - 20;
-            }
-            else if (left < 20) {
-                left = 20;
-            }
-            pinyinPopup.style.top = `${top}px`;
-            pinyinPopup.style.left = `${left}px`;       
-        });    
-        //--- 關閉彈窗
-        pinyinPopup.querySelector("#close-pinyin-popup").addEventListener("click", e => {
-            pinyinPopup.style.display = "none";
-        }); 
-        // 阻止選單內的點擊事件冒泡，避免觸發host的mouseup事件導致control面板的顯示/隱藏
-        textSelectionOptions.addEventListener("mousedown", e => {
-            e.stopPropagation();
-        });
-        textSelectionOptions.addEventListener("mouseup", e => {
-            e.stopPropagation();
-        });
-
- 
-        // 監聽文字選取變化，動態更新選取的文字內容；如果沒有選取任何文字，則隱藏選單與彈窗
-        host.addEventListener('selectionchange', () => {
-            const selection = shadow.getSelection();
-            selectedText = selection.toString().trim();
-
-            // 如果畫面上沒有選取任何文字，立刻隱藏選單與彈窗
-            if (selectedText.length === 0) {
-                textSelectionOptions.style.display = "none";
-                pinyinPopup.style.display = "none";
-            }
-        });
-
-        // 監聽滑鼠事件：選取文字顯示選單，點擊空白處切換控制面板顯示
-        host.addEventListener('mouseup', e => {
-            if (isDragging) {
-                isDragging = false;
-                localStorage.setItem('pinyin_popup_position', JSON.stringify({ top: pinyinPopup.offsetTop, left: pinyinPopup.offsetLeft }));
-                return;
-            }
             setTimeout(() => {
-                const selection = shadow.getSelection();
-                // 獲取選取的文字
-                selectedText = selection.toString().trim();
-                // 如果有選取文字，則顯示選單
-                if (selectedText.length > 0) {
-                    /*if(textSelectionOptions.style.display === 'flex') {
-                        return;
-                    }*/
-                    textSelectionOptions.style.display = "flex";
-                    const rect = selection.getRangeAt(0).getBoundingClientRect();
-                    if(rect.top < 60) {
-                        textSelectionOptions.style.top = `${rect.bottom + 10}px`;
-                    }
-                    else {
-                        textSelectionOptions.style.top = `${rect.top - textSelectionOptions.offsetHeight - 10}px`;
-                    }
-                    const newLeft = rect.right - textSelectionOptions.offsetWidth / 2;
-                    if(newLeft + textSelectionOptions.offsetWidth > window.innerWidth) {
-                        textSelectionOptions.style.left = `${window.innerWidth - textSelectionOptions.offsetWidth - 20}px`;
-                    } 
-                    else {
-                        textSelectionOptions.style.left = `${newLeft}px`;
-                    }
-                    // 更新彈窗內容
-                    const pinyinPopupContent = pinyinPopup.querySelector("#pinyin-popup-content");
-                    const sentences = selectedText.split(/([。？！；…\n\r]|\,\s*)/g)
-                            .map(s => s.trim())
-                            .filter(s => s.length > 0)
-                            .reduce((acc, current) => {
-                                const punctuations = ["。", "？", "！", "；", "…", ",", "”", "“", "‘", "’"];
-                                if (punctuations.includes(current) && acc.length > 0) {
-                                    acc[acc.length - 1] += current;
-                                } else {
-                                    acc.push(current);
-                                }
-                                return acc;
-                            }, []);
-                    let pinyinHtml = "";
-                    sentences.forEach(sentence => {
-                        pinyinHtml += html(sentence)+"<br>";
-                    });
-                    pinyinPopupContent.innerHTML = pinyinHtml;
-                }
-                // 點擊空白處切換控制面板顯示
-                else {       
-                    if(textSelectionOptions.style.display === 'flex') {
-                        textSelectionOptions.style.display = "none";
-                        pinyinPopup.style.display = "none";
-                        return;
-                    }                      
+                host.scrollTop = host.scrollHeight * scrollPercent;
+            }, 10);
+        };
 
-                    if (controls.style.opacity == '0') {
-                        if (isScrolling) stopScrolling();
-                        controls.style.opacity = '1';
-                        controls.style.pointerEvents = 'auto';
-                    } else {
-                        if (!colorOptions.contains(e.target)) {
-                            colorOptions.style.display = 'none';
-                        }
-                        else {
-                            return;
-                        }
-                        controls.style.opacity = '0';
-                        controls.style.pointerEvents = 'none';
-                    }
-                }
-            }, 100);
-        });
-       
+
         let lastScrollY = host.scrollTop;
         let scrollTimeoutId = null;
         let isJumping = false; // 跳轉鎖定狀態
@@ -766,7 +799,7 @@
             pageScrollContainer.querySelector('#page-up-btn').disabled = host.scrollTop === 0;
             pageScrollContainer.querySelector('#page-down-btn').disabled = host.scrollTop + window.innerHeight >= host.scrollHeight;
 
-            const currentScrollY = host.scrollTop;       
+            const currentScrollY = host.scrollTop;
 
             // 向下捲動
             if (currentScrollY > lastScrollY) {
@@ -775,7 +808,7 @@
                 if (reachedBottom && !isJumping) {
                     isJumping = true; // 鎖定,防止重複觸發
                     showTips('到底了，跳轉中⋯', 3);
-                    if ( !scrollTimeoutId ) {
+                    if (!scrollTimeoutId) {
                         scrollTimeoutId = setTimeout(() => {
                             jumpTo(nextLink);
                             isJumping = false; // 解鎖
@@ -783,7 +816,7 @@
                         }, 3000);
                     }
                 }
-            } 
+            }
             // 向上捲動(取消跳轉)
             else if (currentScrollY < lastScrollY) {
                 if (scrollTimeoutId || isJumping) {
@@ -792,11 +825,11 @@
                     isJumping = false; // 解鎖
                     showTips('已取消跳轉', 3);
                 }
-            }   
+            }
             lastScrollY = currentScrollY;
         });
 
-        window.addEventListener('keydown', (e) => {
+        window.addEventListener('keydown', e => {
             const scrollContainer = host;
             const scrollPage = window.innerHeight * 0.9;
             const scrollLine = 100;
@@ -863,41 +896,31 @@
             }
         }, true);
 
-        // 手機端的左右滑動事件: 向左滑動跳轉下一頁, 向右滑動跳轉上一頁
-        let touchStartX = 0;
-        host.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, false);
-        host.addEventListener('touchend', e => {
-            const swipeDistance = touchStartX - e.changedTouches[0].screenX;
-            if (swipeDistance > 50) jumpTo(nextLink);
-            if (swipeDistance < -50) jumpTo(prevLink);
-        }, false);
-       
         // 內容異常檢測: 內容過短或標題包含502錯誤提示, 則認定為提取失敗, 進行重試
         if (article.content.length < 500) {
             //console.log("Article content is short:", article.content.length);
-            if(article.content.length === 0 || /502: Bad gateway/i.test(article.title)) { 
+            if (article.content.length === 0 || /502: Bad gateway/i.test(article.title)) {
                 const failedCount = parseInt(localStorage.getItem('load_failed_count') || '0') + 1;
                 localStorage.setItem('load_failed_count', failedCount);
-                if(failedCount >= 3) {
+                if (failedCount >= 3) {
                     localStorage.removeItem('load_failed_count');
                     localStorage.setItem('reader_mode', 'close');
                     window.location.reload();
                 } else {
                     showTips('未能提取到正文內容，正在重試...', 5);
-                    setTimeout(() => window.location.reload(), failedCount*1000);
+                    setTimeout(() => window.location.reload(), failedCount * 1000);
                 }
             }
-			if(!nextLink && !prevLink) {
+            if (!nextLink && !prevLink) {
                 showTips('資料載入可能發生異常，請重載或離開閱讀模式重入。', 30);
             }
         }
         else {
             localStorage.removeItem('load_failed_count');
+            /*
             if (window.innerWidth >= 1000) {
                 pageScrollContainer.style.display = 'flex';
-            }
+            }*/
         }
 
         updateScrollUI();
@@ -925,16 +948,16 @@
     }
 
     function cleanDoc(doc) {
-        const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });   
-        const titleSelectors = ['h1', 'h2', 'h3', '.subtitle', '.nr_title','.chapter-title', '.title'];      
-        const titleRegex = /第.*[章回頁页卷]|【\d+章】|^\d+、/; 
+        const converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
+        const titleSelectors = ['h1', 'h2', 'h3', '.subtitle', '.nr_title', '.chapter-title', '.title'];
+        const titleRegex = /第.*[章回頁页卷]|【\d+章】|^\d+、/;
         let extractedTitle = "";
         titleSelectors.some(selector => {
             const el = doc.querySelector(selector);
             if (el) {
                 el.querySelectorAll('.review-count').forEach(r => r.remove());
                 const text = converter(el.innerText.trim());
-                if(titleRegex.test(text)) {
+                if (titleRegex.test(text)) {
                     extractedTitle = text;
                     return true;
                 }
@@ -946,15 +969,15 @@
             'a[href*="javascript"]', 'button, h1, h2, ui, li, hr'
         ];
         const trashKeywords = [
-            "報錯", "開燈", "關燈", "章節列表", "目錄", "返回", "簡介", 
-            "上一章", "下一章", "上一頁", "下一頁", "上一篇", "下一篇", 
-            "ADVERTISEMENT", "語音速度", "語音音調", "設置", "背景", "字體", 
+            "報錯", "開燈", "關燈", "章節列表", "目錄", "返回", "簡介",
+            "上一章", "下一章", "上一頁", "下一頁", "上一篇", "下一篇",
+            "ADVERTISEMENT", "語音速度", "語音音調", "設置", "背景", "字體",
             "手機用戶請瀏覽", "閱讀完整內容", "加入書籤", "投推薦票"
         ];
         trashSelectors.forEach(s => doc.querySelectorAll(s).forEach(el => el.remove()));
         doc.querySelectorAll('div, p, span, a').forEach(el => {
             const text = converter(el.innerText);
-            if (text && trashKeywords.some(k => text.trim() === k)){
+            if (text && trashKeywords.some(k => text.trim() === k)) {
                 console.log("Removing element with text:", text);
                 el.remove();
             }
@@ -972,31 +995,31 @@
             const segments = p.innerHTML.split(/<br\s*\/?>/i);
             segments.forEach(function (segment) {
                 //console.log("Original segment:", segment);
-				const tempSegment = document.createElement('div');
-				tempSegment.innerHTML = converter(segment);
+                const tempSegment = document.createElement('div');
+                tempSegment.innerHTML = converter(segment);
                 //console.log("Processing segment:", tempSegment.innerText);
-				const trimmedText = tempSegment.innerText.replace(/&nbsp;|&emsp;|&ensp;|　|  /g, '').trim();
-				if (trimmedText.length > 0) {
-					const spamRegex = /[8⑧⑻⒏８][bbｂｂBВвьЬＢ][oоσOOΟＯｏОο][oоσOOΟＯｏОο][kккｋККKＫ]/;
-					if (spamRegex.test(trimmedText)) return;
+                const trimmedText = tempSegment.innerText.replace(/&nbsp;|&emsp;|&ensp;|　|  /g, '').trim();
+                if (trimmedText.length > 0) {
+                    const spamRegex = /[8⑧⑻⒏８][bbｂｂBВвьЬＢ][oоσOOΟＯｏОο][oоσOOΟＯｏОο][kккｋККKＫ]/;
+                    if (spamRegex.test(trimmedText)) return;
                     if (/copyright \d{4}/i.test(trimmedText)) return;
-					if (/黃金屋|最新的小說章節|最新章節|提供最快更新|我的書城|臺灣小[說説]網|記住首發網站域名|本書由.*全網首發/.test(trimmedText)) return;
-					if (/twkan/i.test(trimmedText)) return;
-					const hasDate = /\d{4}[-/]\d{1,2}[-/]\d{1,2}/.test(trimmedText);
-					const isKeywordTrash = trimmedText.length < 10 && trashKeywords.some(k => trimmedText.includes(k));
+                    if (/黃金屋|最新的小說章節|最新章節|提供最快更新|我的書城|臺灣小[說説]網|記住首發網站域名|本書由.*全網首發/.test(trimmedText)) return;
+                    if (/twkan/i.test(trimmedText)) return;
+                    const hasDate = /\d{4}[-/]\d{1,2}[-/]\d{1,2}/.test(trimmedText);
+                    const isKeywordTrash = trimmedText.length < 10 && trashKeywords.some(k => trimmedText.includes(k));
                     const removeSpaceTitle = slimTitle.replace(/\s+/g, '');
-                    const removeSpaceText = trimmedText.replace(/\s+/g, ''); 
-					let isTitle = (removeSpaceTitle.includes(removeSpaceText) || removeSpaceText.includes(removeSpaceTitle));
-					if (!isTitle) {
-						const pureTitle = slimTitle.replace(titleRegex, "").trim();
-						const pureTrimmed = trimmedText.replace(titleRegex, "").trim();
-						if (pureTitle.length > 0 && pureTitle.includes(pureTrimmed)) isTitle = true;
+                    const removeSpaceText = trimmedText.replace(/\s+/g, '');
+                    let isTitle = (removeSpaceTitle.includes(removeSpaceText) || removeSpaceText.includes(removeSpaceTitle));
+                    if (!isTitle) {
+                        const pureTitle = slimTitle.replace(titleRegex, "").trim();
+                        const pureTrimmed = trimmedText.replace(titleRegex, "").trim();
+                        if (pureTitle.length > 0 && pureTitle.includes(pureTrimmed)) isTitle = true;
                         //console.log({ pureTitle, pureTrimmed, isTitle });
                     }
                     //console.log({ trimmedText, hasDate, isKeywordTrash, isTitle });
-					if (!hasDate && !isKeywordTrash && !isTitle) finalizedHtml += `<p>${trimmedText}</p>`;
-				}
-			});
+                    if (!hasDate && !isKeywordTrash && !isTitle) finalizedHtml += `<p>${trimmedText}</p>`;
+                }
+            });
         });
         return {
             title: slimTitle,
