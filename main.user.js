@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小說閱讀器插件
 // @namespace    https://github.com/naimiliu/novelreader
-// @version      1.1.1
+// @version      1.1.2
 // @description  自動抓取正文，提供字體調整、自動捲動等功能，提升小說閱讀體驗。
 // @icon         https://raw.githubusercontent.com/naimiliu/novelreader/main/default.png
 // @author       naimiliu
