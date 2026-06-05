@@ -245,8 +245,7 @@
                 z-index:999999; 
                 -webkit-overflow-scrolling: touch;
             }
-            .nr_layout { width: 95% !important; margin: 60px auto 20px; padding: 20px 0; max-width: 800px; }
-            @media (min-width: 1000px) { .nr_layout { width: 80% !important; max-width: 1250px; } }
+            .nr_layout { width: 95% !important; margin: 60px auto 20px; padding: 20px 0; max-width: 1000px; }
             .nr_content { font-size: var(--main-font-size) !important; color: var(--main-text-color) !important; 
                 line-height: 1.3 !important; letter-spacing: 1px !important; word-wrap: break-word !important; 
                 overflow-wrap: break-word !important; padding-bottom: 80vh !important; 
