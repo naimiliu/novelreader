@@ -627,10 +627,16 @@
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
             });
+
             host.addEventListener('touchend', e => {
-                if(e.target.tagName === "BUTTON" ) return;
-                const deltaX = touchStartX - e.changedTouches[0].clientX;
-                const deltaY = touchStartY - e.changedTouches[0].clientY;
+                const touch = e.changedTouches[0];
+                // 取得手指「放開當下」那個物理坐標上的元素
+                const realTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+
+                if (realTarget && realTarget.closest('button')) return;
+
+                const deltaX = touchStartX - touch.clientX;
+                const deltaY = touchStartY - touch.clientY;
 
                 // 優先判斷系統原生狀態：如果手機當前已經選取了文字，不執行任何自訂動作
                 if (window.getSelection().toString().trim().length > 0) {
