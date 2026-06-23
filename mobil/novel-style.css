@@ -65,7 +65,7 @@ button:focus {
     display: flex;
     position: fixed;
     top : 10px;
-    right: 40px;
+    right: 0px;
     z-index: 2147483647;
 }
 
@@ -181,7 +181,7 @@ button:focus {
     display: flex;
     position: fixed;
     top: 50%;
-    right: 40px;
+    right: 0px;
     flex-direction: column;
     gap: 10px;
     z-index: 2147483647;
