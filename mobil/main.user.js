@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小說閱讀器(純)
 // @namespace    https://github.com/naimiliu/novelreader
-// @version      1.2.4
+// @version      1.2.5
 // @description  自動抓取正文，提供字體調整、自動捲動等功能，提升小說閱讀體驗。
 // @icon         https://raw.githubusercontent.com/naimiliu/novelreader/main/default.png
 // @author       naimiliu
@@ -243,27 +243,8 @@ const NovelUI = {
                 }, 10 * 1000);
             }
         });
-        // 控制面板自動隱藏邏輯：10秒無操作後淡出，移動到控制面板上則取消隱藏，離開則重新計時
-        this.controls.addEventListener('mouseenter', () => {
-            if (ctrlHiddenTimeout) {
-                clearTimeout(ctrlHiddenTimeout);
-                ctrlHiddenTimeout = null;
-            }
-            this.controls.classList.add('show');
-        });
-        this.controls.addEventListener('mouseleave', () => {
-            if (ctrlHiddenTimeout) clearTimeout(ctrlHiddenTimeout);
-            ctrlHiddenTimeout = setTimeout(() => {
-                this.controls.classList.remove('show');
-                colorOptions.classList.remove('show');
-            }, 10 * 1000);
-        });
-        this.controls.addEventListener('touchend', e => {
+        this.controls.addEventListener('pointerup', e => {
             e.stopPropagation();
-        });
-        this.controls.addEventListener('mouseup', e => {
-            e.stopPropagation();
-            this.shadow.getSelection().removeAllRanges();
             colorOptions.classList.remove('show');
 
             // 取消隱藏計時
@@ -311,10 +292,7 @@ const NovelUI = {
             this.updateFontSize(this.currentSize);
         });
         // --- color picker
-        this.controls.querySelector('#color-picker').addEventListener('mouseup', (e) => {
-            e.stopPropagation();
-        });
-        this.controls.querySelector('#color-picker').addEventListener('touchend', (e) => {
+        this.controls.querySelector('#color-picker').addEventListener('pointerup', (e) => {
             e.stopPropagation();
         });
         this.controls.querySelector('#color-picker').addEventListener('click', (e) => {
@@ -322,10 +300,7 @@ const NovelUI = {
             colorOptions.classList.toggle('show');
         });
         // === color options
-        colorOptions.addEventListener('mouseup', e => {
-            e.stopPropagation();
-        });
-        colorOptions.addEventListener('touchend', e => {
+        colorOptions.addEventListener('pointerup', e => {
             e.stopPropagation();
         });
         colorOptions.querySelectorAll('.color-cb').forEach(cb => {
@@ -346,10 +321,6 @@ const NovelUI = {
         });
 
         // 頁面捲動按鈕事件
-        navContainer.addEventListener('mouseup', e => {
-            e.stopPropagation();
-            window.getSelection().removeAllRanges();
-        })
         navContainer.querySelector('#page-home-btn').addEventListener('click', e => {
             this.host.scrollBy({
                 top: -this.host.scrollHeight
@@ -373,37 +344,34 @@ const NovelUI = {
             });
         });
         // 觸控裝置滑動與點擊事件
-        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0; // 使用簡單的特徵偵測，判斷當前裝置是否支援觸控
-        if (isTouchDevice) {
-            // 觸控裝置: 滑動跳頁.點擊空白處切換控制面板顯示/隱藏
-            let touchStartX = 0;
-            let touchStartY = 0;
-            // 手機端的左右滑動事件: 向左滑動跳轉下一頁, 向右滑動跳轉上一頁
-            this.host.addEventListener('touchstart', e => {
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-            });
-            this.host.addEventListener('touchend', e => {
-                const deltaX = touchStartX - e.changedTouches[0].clientX;
-                const deltaY = touchStartY - e.changedTouches[0].clientY;
+        // 觸控裝置: 滑動跳頁.點擊空白處切換控制面板顯示/隱藏
+        let touchStartX = 0;
+        let touchStartY = 0;
+        // 手機端的左右滑動事件: 向左滑動跳轉下一頁, 向右滑動跳轉上一頁
+        this.host.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+        this.host.addEventListener('touchend', e => {
+            const deltaX = touchStartX - e.changedTouches[0].clientX;
+            const deltaY = touchStartY - e.changedTouches[0].clientY;
 
-                // 優先判斷系統原生狀態：如果手機當前已經選取了文字，不執行任何自訂動作
-                if (this.shadow.getSelection().toString().trim().length > 0) {
-                    return;
-                }
+            // 優先判斷系統原生狀態：如果手機當前已經選取了文字，不執行任何自訂動作
+            if (this.shadow.getSelection().toString().trim().length > 0) {
+                return;
+            }
 
-                // 判斷滑動跳頁 (X 軸位移大於 60px，且 Y 軸垂直偏移小於 40px)
-                if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 40) {
-                    if (deltaX < 0) {
-                        this.jumpTo(this.nextLink);
-                    }
-                    else {
-                        this.jumpTo(this.prevLink);
-                    }
-                    return;
+            // 判斷滑動跳頁 (X 軸位移大於 60px，且 Y 軸垂直偏移小於 40px)
+            if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 40) {
+                if (deltaX < 0) {
+                    this.jumpTo(this.nextLink);
                 }
-            });
-        }
+                else {
+                    this.jumpTo(this.prevLink);
+                }
+                return;
+            }
+        });
 
         let lastScrollY = this.host.scrollTop;
         let scrollTimeoutId = null;
@@ -444,73 +412,6 @@ const NovelUI = {
             }
             lastScrollY = currentScrollY;
         });
-
-        window.addEventListener('keydown', e => {
-            const scrollContainer = this.host;
-            const scrollPage = window.innerHeight * 0.9;
-            const scrollLine = 100;
-
-            if (this.isScrolling) {
-                e.preventDefault();
-                this.stopScrolling();
-                this.showTips('自動捲動已中斷');
-                return;
-            }
-
-            switch (e.code) {
-                case 'Escape':
-                    e.preventDefault();
-                    if (scrollTimeoutId || isJumping) {
-                        clearTimeout(scrollTimeoutId);
-                        scrollTimeoutId = null;
-                        isJumping = false; // 解鎖
-                        this.showTips('已取消跳轉', 3);
-                    }
-                    else {
-                        // 按下Esc且沒有跳轉在等待中，則退出閱讀模式
-                        localStorage.setItem('reader_mode', 'close');
-                        location.reload();
-                    }
-                    break;
-                case 'Space':
-                case 'PageDown':
-                    e.preventDefault();
-                    scrollContainer.scrollBy({
-                        top: scrollPage,
-                        behavior: 'smooth'
-                    });
-                    break;
-                case 'PageUp':
-                    e.preventDefault();
-                    scrollContainer.scrollBy({
-                        top: -scrollPage,
-                        behavior: 'smooth'
-                    });
-                    break;
-                case 'ArrowDown':
-                    e.preventDefault();
-                    scrollContainer.scrollBy({
-                        top: scrollLine,
-                        behavior: 'smooth'
-                    });
-                    break;
-                case 'ArrowUp':
-                    e.preventDefault();
-                    scrollContainer.scrollBy({
-                        top: -scrollLine,
-                        behavior: 'smooth'
-                    });
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    this.jumpTo(this.nextLink);
-                    break;
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    this.jumpTo(this.prevLink);
-                    break;
-            }
-        }, true);
     },
     hide() {
         if (this.controls) this.controls.classList.remove('show');
