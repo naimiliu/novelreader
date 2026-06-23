@@ -1,5 +1,4 @@
 @charset "UTF-8";
-@import url("selection-style.css");
 :host {
     --main-font-size: 28px;
     --main-text-color: #a0a0a0;
