@@ -182,6 +182,7 @@ const NovelUI = {
         // --- Setting Button : 切換controls的顯示/隱藏
         const settingContainer = document.createElement('div');
         settingContainer.className = 'setting-container';
+        settingContainer.style.right = 0;
         settingContainer.innerHTML = `<button class="setting" id='setting-btn' title="設定">${settingIcon}</button>`;
         this.shadow.appendChild(settingContainer);
 
