@@ -6,7 +6,7 @@
   
 ### 🛠️安裝指南  
 1. 瀏覽器需先安裝**篡改猴**元件(TamperMonkey)。
-2. 安裝**小說閱讀器**腳本：[main.user.js](https://raw.githubusercontent.com/naimiliu/novelreader/main/main.user.js) / [測試版](https://raw.githubusercontent.com/naimiliu/novelreader/main/test.user.js)
+2. 安裝**小說閱讀器**腳本：[main.user.js](https://raw.githubusercontent.com/naimiliu/novelreader/main/main.user.js) / [手機版](https://raw.githubusercontent.com/naimiliu/novelreader/main/mobil/main.user.js)
 3. **reload** 小說網頁或**重啟**瀏覽器即可。
   
 ### 🌍支援網址格式  
