@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name         小說閱讀器(純)
 // @namespace    https://github.com/naimiliu/novelreader
-// @version      1.2.3
+// @version      1.2.4
 // @description  自動抓取正文，提供字體調整、自動捲動等功能，提升小說閱讀體驗。
 // @icon         https://raw.githubusercontent.com/naimiliu/novelreader/main/default.png
 // @author       naimiliu
 // @match        https://*/*
 // @exclude      *://*.google.com.tw/*
 // @exclude      *://*.facebook.*/*
-// @grant        none
 // @run-at       document-end
 // @require      https://cdnjs.cloudflare.com/ajax/libs/readability/0.6.0/Readability.min.js
 // @require      https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js
