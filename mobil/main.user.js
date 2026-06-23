@@ -202,6 +202,7 @@ const NovelUI = {
         const navContainer = document.createElement('div');
         navContainer.className = 'nav-container';
         navContainer.style.transform = 'translateY(-50%)';
+        navContainer.style.right = 0;
         navContainer.innerHTML = `
                 <button class="page-btn" id="page-home-btn" title="Page Home" style="rotate: 180deg; margin-bottom: 50px;" disabled>${endIcon}</button>
                 <button class="page-btn" id="page-up-btn" title="Page Up" disabled>${upIcon}</button>
