@@ -65,7 +65,7 @@ button:focus {
     display: flex;
     position: fixed;
     top : 10px;
-    right: 0px;
+    right: 40px;
     z-index: 2147483647;
 }
 
