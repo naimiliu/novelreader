@@ -24,6 +24,7 @@
     margin: 60px auto 20px;
     padding: 20px 0;
     max-width: 1000px;
+    touch-action: pan-y;
 }
 
 .nr_layout h1 {
@@ -65,7 +66,7 @@ button:focus {
     display: flex;
     position: fixed;
     top : 10px;
-    right: 40px;
+    right: 0px;
     z-index: 2147483647;
 }
 .controls.show .setting-container {
@@ -184,7 +185,7 @@ button:focus {
     display: flex;
     position: fixed;
     top: 50%;
-    right: 40px;
+    right: 0px;
     flex-direction: column;
     gap: 10px;
     z-index: 2147483647;
