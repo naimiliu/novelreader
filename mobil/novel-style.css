@@ -65,13 +65,9 @@ button:focus {
 .setting-container {
     display: flex;
     position: fixed;
-    top: 10px;
+    top: 55px;
     right: 0px;
     z-index: 2147483647;
-}
-
-.controls.show + .setting-container {
-    top: 55px;
 }
 
 .setting-container button {
