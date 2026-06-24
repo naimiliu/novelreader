@@ -342,10 +342,10 @@ const NovelUI = {
             // 判斷滑動跳頁 (X 軸位移大於 60px，且 Y 軸垂直偏移小於 40px)
             if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 40) {
                 if (deltaX < 0) {
-                    this.jumpTo(this.nextLink);
+                    this.jumpTo(this.prevLink);
                 }
                 else {
-                    this.jumpTo(this.prevLink);
+                    this.jumpTo(this.nextLink);
                 }
                 return;
             }
