@@ -179,12 +179,6 @@ const NovelUI = {
             `;
         this.shadow.appendChild(this.controls);
 
-        // --- Setting Button : 切換controls的顯示/隱藏
-        const settingContainer = document.createElement('div');
-        settingContainer.className = 'setting-container';
-        settingContainer.innerHTML = `<button class="setting" id='setting-btn' title="設定">${settingIcon}</button>`;
-        this.shadow.appendChild(settingContainer);
-
         // --- 配色選項面板
         const colorOptions = document.createElement('div');
         colorOptions.className = 'color-options';
@@ -202,9 +196,6 @@ const NovelUI = {
         const navContainer = document.createElement('div');
         navContainer.className = 'nav-container';
         navContainer.style.transform = 'translateY(-50%)';
-        console.log(this.host.clientWidth, window.innerWidth);
-
-        settingContainer.style.right = `${window.innerWidth - this.host.clientWidth}px`;
         navContainer.style.right = `${window.innerWidth - this.host.clientWidth}px`;
         navContainer.innerHTML = `
                 <button class="page-btn" id="page-home-btn" title="Page Home" style="rotate: 180deg; margin-bottom: 50px;" disabled>${endIcon}</button>
@@ -213,6 +204,14 @@ const NovelUI = {
                 <button class="page-btn" id="page-end-btn" title="PageEnd" style="margin-top: 50px;">${endIcon}</button>
             `;
         this.shadow.appendChild(navContainer);
+        
+        // --- Setting Button : 切換controls的顯示/隱藏
+        const settingContainer = document.createElement('div');
+        settingContainer.className = 'setting-container';
+        settingContainer.style.right = `${window.innerWidth - this.host.clientWidth}px`;
+        settingContainer.innerHTML = `<button class="setting" id='setting-btn' title="設定">${settingIcon}</button>`;
+        this.shadow.appendChild(settingContainer);
+
 
         // 提示訊息元素
         const tips = document.createElement('div');
