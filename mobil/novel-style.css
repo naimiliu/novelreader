@@ -72,6 +72,9 @@ button:focus {
 #shadow-root:has(.controls.show) .setting-container {
     top: 55px;
 }
+.controls.show + .setting-container {
+    top: 55px;
+}
 
 .setting-container button {
     width: 48px;
