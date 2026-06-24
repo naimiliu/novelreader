@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小說閱讀器(純)
 // @namespace    https://github.com/naimiliu/novelreader
-// @version      1.2.13
+// @version      1.2.14
 // @description  自動抓取正文，提供字體調整、自動捲動等功能，提升小說閱讀體驗。
 // @icon         https://raw.githubusercontent.com/naimiliu/novelreader/main/default.png
 // @author       naimiliu
@@ -11,7 +11,7 @@
 // @run-at       document-end
 // @require      https://cdnjs.cloudflare.com/ajax/libs/readability/0.6.0/Readability.min.js
 // @require      https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js
-// @resource     NOVEL_CSS https://raw.githubusercontent.com/naimiliu/novelreader/refs/heads/main/mobil/novel-style.css?v1.2.13
+// @resource     NOVEL_CSS https://raw.githubusercontent.com/naimiliu/novelreader/refs/heads/main/mobil/novel-style.css?v1.2.14
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @updateURL    https://raw.githubusercontent.com/naimiliu/novelreader/main/mobil/main.user.js
@@ -136,7 +136,7 @@ const NovelUI = {
     },
     renderReader(article) {
         this.currentSize = parseInt(localStorage.getItem('reader_font_size')) || 28;
-        const currentColor = localStorage.getItem('reader_text_color') || '#a0a0a0';
+        const currentColor = localStorage.getItem('reader_text_color') || '#c0c0c0';
         const currentBgColor = localStorage.getItem('reader_bg_color') || '#111111';
         this.host.style.setProperty('--main-font-size', `${this.currentSize}px`);
         this.host.style.setProperty('--main-text-color', currentColor);
@@ -192,7 +192,7 @@ const NovelUI = {
         const colorOptions = document.createElement('div');
         colorOptions.className = 'color-options';
         colorOptions.innerHTML = `
-                <a class="color-cb" data-bg="#111111" data-fc="#a0a0a0" style="background: linear-gradient(-45deg, #111111 60%, #a0a0a0 40%);"></a>
+                <a class="color-cb" data-bg="#111111" data-fc="#c0c0c0" style="background: linear-gradient(-45deg, #111111 60%, #c0c0c0 40%);"></a>
                 <a class="color-cb" data-bg="#363b40" data-fc="#b8bfc6" style="background: linear-gradient(-45deg, #363b40 60%, #b8bfc6 40%);"></a>
                 <a class="color-cb" data-bg="#DCDCDC" data-fc="#191919" style="background: linear-gradient(-45deg, #DCDCDC 60%, #191919 40%);"></a>
                 <a class="color-cb" data-bg="#EFE7CD" data-fc="#191919" style="background: linear-gradient(-45deg, #EFE7CD 60%, #191919 40%);"></a>
