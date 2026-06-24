@@ -332,6 +332,7 @@ const NovelUI = {
         let touchStartY = 0;
         // 手機端的左右滑動事件: 向左滑動跳轉下一頁, 向右滑動跳轉上一頁
         this.host.addEventListener('pointerdown', e => {
+            if (this.isScrolling) this.stopScrolling();
             touchStartX = e.clientX;
             touchStartY = e.clientY;
         });
@@ -387,7 +388,8 @@ const NovelUI = {
                 }
             }
             lastScrollY = currentScrollY;
-        });
+        }, true);
+
         window.addEventListener('keydown', e => {
             const scrollContainer = this.host;
             const scrollPage = window.innerHeight * 0.9;
