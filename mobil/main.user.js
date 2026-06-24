@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小說閱讀器(純)
 // @namespace    https://github.com/naimiliu/novelreader
-// @version      1.2.8
+// @version      1.2.9
 // @description  自動抓取正文，提供字體調整、自動捲動等功能，提升小說閱讀體驗。
 // @icon         https://raw.githubusercontent.com/naimiliu/novelreader/main/default.png
 // @author       naimiliu
@@ -179,6 +179,13 @@ const NovelUI = {
             `;
         this.shadow.appendChild(this.controls);
 
+        // --- Setting Button : 切換controls的顯示/隱藏
+        const settingContainer = document.createElement('div');
+        settingContainer.className = 'setting-container';
+        settingContainer.innerHTML = `<button class="setting" id='setting-btn' title="設定">${settingIcon}</button>`;
+        settingContainer.style.right = `${window.innerWidth - this.host.clientWidth}px`;
+        this.shadow.appendChild(settingContainer);
+
         // --- 配色選項面板
         const colorOptions = document.createElement('div');
         colorOptions.className = 'color-options';
@@ -205,13 +212,6 @@ const NovelUI = {
             `;
         this.shadow.appendChild(navContainer);
         
-        // --- Setting Button : 切換controls的顯示/隱藏
-        const settingContainer = document.createElement('div');
-        settingContainer.className = 'setting-container';
-        settingContainer.innerHTML = `<button class="setting" id='setting-btn' title="設定">${settingIcon}</button>`;
-        settingContainer.style.right = `${window.innerWidth - this.host.clientWidth}px`;
-        this.shadow.appendChild(settingContainer);
-
 
         // 提示訊息元素
         const tips = document.createElement('div');
