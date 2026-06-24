@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小說閱讀器(純)
 // @namespace    https://github.com/naimiliu/novelreader
-// @version      1.2.6
+// @version      1.2.7
 // @description  自動抓取正文，提供字體調整、自動捲動等功能，提升小說閱讀體驗。
 // @icon         https://raw.githubusercontent.com/naimiliu/novelreader/main/default.png
 // @author       naimiliu
@@ -208,8 +208,8 @@ const NovelUI = {
         // --- Setting Button : 切換controls的顯示/隱藏
         const settingContainer = document.createElement('div');
         settingContainer.className = 'setting-container';
-        settingContainer.style.right = `${window.innerWidth - this.host.clientWidth}px`;
         settingContainer.innerHTML = `<button class="setting" id='setting-btn' title="設定">${settingIcon}</button>`;
+        settingContainer.style.right = `${window.innerWidth - this.host.clientWidth}px`;
         this.shadow.appendChild(settingContainer);
 
 
