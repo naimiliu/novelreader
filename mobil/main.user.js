@@ -163,7 +163,7 @@ const NovelUI = {
         this.controls = document.createElement('div');
         this.controls.id = 'controls';
         this.controls.className = 'controls';
-        this.controls.right = `${scrollBarWidth}px`;
+        this.controls.style.right = `${scrollBarWidth}px`;
         this.controls.innerHTML = `
                 <button id="auto-scroll-toggle"></button>
                 <span id="speed-panel" class="${this.isScrolling ? 'show' : ''}">
