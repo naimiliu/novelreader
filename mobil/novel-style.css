@@ -67,6 +67,7 @@ button:focus {
     position: fixed;
     top: 10px;
     right: 0px;
+    transition: all 0.3s ease-out;
     z-index: 2147483647;
 }
 
@@ -88,13 +89,14 @@ button:focus {
 }
 
 .controls {
-    transform: translateY(-80%);
+    transform: translateX(100%);
     transition: all 0.3s ease-out;
     opacity: 0;
     pointer-events: none;
     display: flex;
     position: fixed;
     top: 5px;
+    right: 0px;
     width: auto;
     height: auto;
     justify-content: flex-end;
