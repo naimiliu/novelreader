@@ -11,7 +11,7 @@
 // @run-at       document-end
 // @require      https://cdnjs.cloudflare.com/ajax/libs/readability/0.6.0/Readability.min.js
 // @require      https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js
-// @resource     NOVEL_CSS https://raw.githubusercontent.com/naimiliu/novelreader/main/mobil/novel-style.css
+// @resource     NOVEL_CSS https://raw.githubusercontent.com/naimiliu/novelreader/refs/heads/main/mobil/novel-style.css
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @updateURL    https://raw.githubusercontent.com/naimiliu/novelreader/main/mobil/main.user.js
@@ -182,7 +182,6 @@ const NovelUI = {
         // --- Setting Button : 切換controls的顯示/隱藏
         const settingContainer = document.createElement('div');
         settingContainer.className = 'setting-container';
-        settingContainer.style.right = 0;
         settingContainer.innerHTML = `<button class="setting" id='setting-btn' title="設定">${settingIcon}</button>`;
         this.shadow.appendChild(settingContainer);
 
@@ -203,7 +202,10 @@ const NovelUI = {
         const navContainer = document.createElement('div');
         navContainer.className = 'nav-container';
         navContainer.style.transform = 'translateY(-50%)';
-        navContainer.style.right = 0;
+        console.log(this.host.clientWidth, window.innerWidth);
+
+        settingContainer.style.right = `${window.innerWidth - this.host.clientWidth}px`;
+        navContainer.style.right = `${window.innerWidth - this.host.clientWidth}px`;
         navContainer.innerHTML = `
                 <button class="page-btn" id="page-home-btn" title="Page Home" style="rotate: 180deg; margin-bottom: 50px;" disabled>${endIcon}</button>
                 <button class="page-btn" id="page-up-btn" title="Page Up" disabled>${upIcon}</button>
@@ -226,40 +228,20 @@ const NovelUI = {
             }, second * 1000)
         }
 
-        let ctrlHiddenTimeout = null;
+        
         // 監聽事件
 
         // 點擊控制面板內的按鈕時也取消隱藏，避免操作中面板突然消失
         settingContainer.querySelector('#setting-btn').addEventListener('click', e => {
             this.controls.classList.toggle('show');
             colorOptions.classList.remove('show');
-            this.shadow.getSelection().removeAllRanges();
-            if (ctrlHiddenTimeout) {
-                clearTimeout(ctrlHiddenTimeout);
-                ctrlHiddenTimeout = null;
-            }
-            if (this.controls.classList.contains('show')) {
-                ctrlHiddenTimeout = setTimeout(() => {
-                    this.hide();
-                }, 10 * 1000);
-            }
         });
         this.controls.addEventListener('pointerup', e => {
             e.stopPropagation();
             colorOptions.classList.remove('show');
-
-            // 取消隱藏計時
-            if (ctrlHiddenTimeout) {
-                clearTimeout(ctrlHiddenTimeout);
-                ctrlHiddenTimeout = null;
-            }
         });
         this.controls.addEventListener('click', e => {
             e.stopPropagation();
-            if (ctrlHiddenTimeout) {
-                clearTimeout(ctrlHiddenTimeout);
-                ctrlHiddenTimeout = null;
-            }
             colorOptions.classList.remove('show');
         });
         // --- auto scroll
@@ -349,19 +331,13 @@ const NovelUI = {
         let touchStartX = 0;
         let touchStartY = 0;
         // 手機端的左右滑動事件: 向左滑動跳轉下一頁, 向右滑動跳轉上一頁
-        this.host.addEventListener('touchstart', e => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
+        this.host.addEventListener('pointerdown', e => {
+            touchStartX = e.clientX;
+            touchStartY = e.clientY;
         });
-        this.host.addEventListener('touchend', e => {
-            const deltaX = touchStartX - e.changedTouches[0].clientX;
-            const deltaY = touchStartY - e.changedTouches[0].clientY;
-
-            // 優先判斷系統原生狀態：如果手機當前已經選取了文字，不執行任何自訂動作
-            if (this.shadow.getSelection().toString().trim().length > 0) {
-                return;
-            }
-
+        this.host.addEventListener('pointerup', e => {
+            const deltaX = touchStartX - e.clientX;
+            const deltaY = touchStartY - e.clientY;
             // 判斷滑動跳頁 (X 軸位移大於 60px，且 Y 軸垂直偏移小於 40px)
             if (Math.abs(deltaX) > 50 && Math.abs(deltaY) < 40) {
                 if (deltaX < 0) {
@@ -378,7 +354,6 @@ const NovelUI = {
         let scrollTimeoutId = null;
         let isJumping = false; // 跳轉鎖定狀態
         this.host.addEventListener('scroll', () => {
-            this.shadow.getSelection().removeAllRanges();
             // 按鈕禁用邏輯
             navContainer.querySelector('#page-home-btn').disabled = this.host.scrollTop === 0;
             navContainer.querySelector('#page-up-btn').disabled = this.host.scrollTop === 0;
@@ -413,12 +388,72 @@ const NovelUI = {
             }
             lastScrollY = currentScrollY;
         });
-    },
-    hide() {
-        if (this.controls) this.controls.classList.remove('show');
-    },
-    show() {
-        if (this.controls) this.controls.classList.add('show');
+        window.addEventListener('keydown', e => {
+            const scrollContainer = this.host;
+            const scrollPage = window.innerHeight * 0.9;
+            const scrollLine = 100;
+
+            if (this.isScrolling) {
+                e.preventDefault();
+                this.stopScrolling();
+                this.showTips('自動捲動已中斷');
+                return;
+            }
+
+            switch (e.code) {
+                case 'Escape':
+                    e.preventDefault();
+                    if (scrollTimeoutId || isJumping) {
+                        clearTimeout(scrollTimeoutId);
+                        scrollTimeoutId = null;
+                        isJumping = false; // 解鎖
+                        this.showTips('已取消跳轉', 3);
+                    }
+                    else {
+                        // 按下Esc且沒有跳轉在等待中，則退出閱讀模式
+                        localStorage.setItem('reader_mode', 'close');
+                        location.reload();
+                    }
+                    break;
+                case 'Space':
+                case 'PageDown':
+                    e.preventDefault();
+                    scrollContainer.scrollBy({
+                        top: scrollPage,
+                        behavior: 'smooth'
+                    });
+                    break;
+                case 'PageUp':
+                    e.preventDefault();
+                    scrollContainer.scrollBy({
+                        top: -scrollPage,
+                        behavior: 'smooth'
+                    });
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    scrollContainer.scrollBy({
+                        top: scrollLine,
+                        behavior: 'smooth'
+                    });
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    scrollContainer.scrollBy({
+                        top: -scrollLine,
+                        behavior: 'smooth'
+                    });
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    this.jumpTo(this.nextLink);
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    this.jumpTo(this.prevLink);
+                    break;
+            }
+        }, true);
     },
     jumpTo(link) { // 頁面跳轉函式
 
@@ -486,7 +521,7 @@ const NovelUI = {
 // 主控流程：環境判斷與模組協調
 // =========================================================================
 function main() {
-    bypassPageBlockers();
+    //bypassPageBlockers();
     // 判斷目前是不是小說頁面:檢查目前網址，不符合則為普通網頁模式
     let isNovelPage = false;
     // 網址規則判斷，只在特定網址啟用閱讀模式
