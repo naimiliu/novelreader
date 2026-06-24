@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小說閱讀器(純)
 // @namespace    https://github.com/naimiliu/novelreader
-// @version      1.2.11
+// @version      1.2.12
 // @description  自動抓取正文，提供字體調整、自動捲動等功能，提升小說閱讀體驗。
 // @icon         https://raw.githubusercontent.com/naimiliu/novelreader/main/default.png
 // @author       naimiliu
@@ -11,7 +11,7 @@
 // @run-at       document-end
 // @require      https://cdnjs.cloudflare.com/ajax/libs/readability/0.6.0/Readability.min.js
 // @require      https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js
-// @resource     NOVEL_CSS https://raw.githubusercontent.com/naimiliu/novelreader/refs/heads/main/mobil/novel-style.css?v1.2.11
+// @resource     NOVEL_CSS https://raw.githubusercontent.com/naimiliu/novelreader/refs/heads/main/mobil/novel-style.css?v1.2.12
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @updateURL    https://raw.githubusercontent.com/naimiliu/novelreader/main/mobil/main.user.js
@@ -334,11 +334,11 @@ const NovelUI = {
         let touchStartY = 0;
         // 手機端的左右滑動事件: 向左滑動跳轉下一頁, 向右滑動跳轉上一頁
         this.host.addEventListener('pointerdown', e => {
-            if (this.isScrolling) this.stopScrolling();
             touchStartX = e.clientX;
             touchStartY = e.clientY;
         });
         this.host.addEventListener('pointerup', e => {
+            if (this.isScrolling) this.stopScrolling();
             const deltaX = touchStartX - e.clientX;
             const deltaY = touchStartY - e.clientY;
             // 判斷滑動跳頁 (X 軸位移大於 60px，且 Y 軸垂直偏移小於 40px)
