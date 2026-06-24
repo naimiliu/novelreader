@@ -11,7 +11,7 @@
 // @run-at       document-end
 // @require      https://cdnjs.cloudflare.com/ajax/libs/readability/0.6.0/Readability.min.js
 // @require      https://cdn.jsdelivr.net/npm/opencc-js@1.3.1/dist/umd/full.js
-// @resource     NOVEL_CSS https://raw.githubusercontent.com/naimiliu/novelreader/refs/heads/main/mobil/novel-style.css
+// @resource     NOVEL_CSS https://raw.githubusercontent.com/naimiliu/novelreader/refs/heads/main/mobil/novel-style.css?v1.2.7
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @updateURL    https://raw.githubusercontent.com/naimiliu/novelreader/main/mobil/main.user.js
